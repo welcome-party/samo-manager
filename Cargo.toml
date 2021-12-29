@@ -1,12 +1,4 @@
-[package]
-name = "samo-manager"
-version = "0.1.0"
-edition = "2021"
-license = "WTFPL"
-publish = false
-
-[dependencies]
-solana-program = "1.9.2"
-
-[lib]
-crate-type = ["cdylib", "lib"]
+[workspace]
+members = [
+    "programs/*"
+]
