@@ -1,0 +1,98 @@
+{
+  "version": "0.1.0",
+  "name": "samo_manager",
+  "instructions": [
+    {
+      "name": "sendVoucher",
+      "accounts": [
+        {
+          "name": "voucher",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "sender",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "fromEmail",
+          "type": "string"
+        },
+        {
+          "name": "toEmail",
+          "type": "string"
+        },
+        {
+          "name": "tokenCount",
+          "type": "i16"
+        },
+        {
+          "name": "validDays",
+          "type": "i16"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Voucher",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sender",
+            "type": "publicKey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "fromEmail",
+            "type": "string"
+          },
+          {
+            "name": "toEmail",
+            "type": "string"
+          },
+          {
+            "name": "tokenCount",
+            "type": "i16"
+          },
+          {
+            "name": "validDays",
+            "type": "i16"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "EmailTooLong",
+      "msg": "The provided email should be 200 characters long maximum."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidTokenCount",
+      "msg": "The provided tokens should be more than 0"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidValidForDays",
+      "msg": "The provided validity period for voucher should be more than 0 days"
+    }
+  ],
+  "metadata": {
+    "address": "FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G"
+  }
+}

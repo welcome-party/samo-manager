@@ -5,11 +5,13 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import {
     Program, Provider, web3
 } from '@project-serum/anchor';
-import idl from '../idl.json';
+import idl from '../idl/samo_manager.json';
 
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+
+const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 
 const wallets = [
     /* view list of available wallets at https://github.com/solana-labs/wallet-adapter#wallets */
@@ -25,14 +27,12 @@ const opts = {
 const programID = new PublicKey(idl.metadata.address);
 
 function SendVoucher() {
+
     const [value, setValue] = useState(null);
     const wallet = useWallet();
 
     async function getProvider() {
-        /* create the provider and return it to the caller */
-        /* network set to local network for now */
-        const network = "http://127.0.0.1:8899";
-        const connection = new Connection(network, opts.preflightCommitment);
+        const connection = new Connection(clusterUrl, opts.preflightCommitment);
 
         const provider = new Provider(
             connection, wallet, opts.preflightCommitment,
@@ -109,7 +109,7 @@ function SendVoucher() {
 }
 
 const SendVoucherWithProvider = () => (
-    <ConnectionProvider endpoint="http://127.0.0.1:8899">
+    <ConnectionProvider endpoint={clusterUrl}>
         <WalletProvider wallets={wallets} autoConnect>
             <WalletModalProvider>
                 <SendVoucher />

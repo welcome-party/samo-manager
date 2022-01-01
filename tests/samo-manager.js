@@ -1,44 +1,122 @@
 const assert = require("assert");
 const anchor = require("@project-serum/anchor");
-const { SystemProgram } = anchor.web3;
 
-describe("samo_manager", () => {
-  /* create and set a Provider */
-  const provider = anchor.Provider.env();
-  anchor.setProvider(provider);
-  const program = anchor.workspace.SamoManager;
+describe('samo-manager', () => {
+    // Configure the client to use the local cluster.
+    anchor.setProvider(anchor.Provider.env());
+    const program = anchor.workspace.SamoManager;
 
-  it("Creates a counter)", async () => {
-    /* Call the create function via RPC */
-    const baseAccount = anchor.web3.Keypair.generate();
-    await program.rpc.create({
-      accounts: {
-        baseAccount: baseAccount.publicKey,
-        user: provider.wallet.publicKey,
-        systemProgram: SystemProgram.programId,
-      },
-      signers: [baseAccount],
+    it('can send a voucher', async () => {
+        const voucher = anchor.web3.Keypair.generate();
+        await program.rpc.sendVoucher('a@a.com', 'b@b.com', 2, 3, {
+            accounts: {
+                voucher: voucher.publicKey,
+                sender: program.provider.wallet.publicKey,
+                systemProgram: anchor.web3.SystemProgram.programId,
+            },
+            signers: [voucher],
+        });
+
+        // Fetch the account details of the created voucher.
+        const voucherAccount = await program.account.voucher.fetch(voucher.publicKey);
+
+        // Ensure it has the right data.
+        assert.equal(voucherAccount.sender.toBase58(), program.provider.wallet.publicKey.toBase58());
+        assert.equal(voucherAccount.fromEmail, 'a@a.com');
+        assert.equal(voucherAccount.toEmail, 'b@b.com');
+        assert.equal(voucherAccount.tokenCount, 2);
+        assert.equal(voucherAccount.validDays, 3);
+        assert.ok(voucherAccount.timestamp);
     });
 
-    /* Fetch the account and check the value of count */
-    const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-    console.log('Count 0: ', account.count.toString())
-    assert.ok(account.count.toString() == 0);
-    _baseAccount = baseAccount;
+    it('can send a new voucher from a different sender', async () => {
+        // Generate another user and airdrop them some SOL.
+        const otherUser = anchor.web3.Keypair.generate();
+        const signature = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000);
+        await program.provider.connection.confirmTransaction(signature);
 
-  });
+        // Call the "sendVoucher" instruction on behalf of this other user.
+        const voucher = anchor.web3.Keypair.generate();
+        await program.rpc.sendVoucher('ab@ab.com', 'blah@blah.com', 5, 2, {
+            accounts: {
+                voucher: voucher.publicKey,
+                sender: otherUser.publicKey,
+                systemProgram: anchor.web3.SystemProgram.programId,
+            },
+            signers: [otherUser, voucher],
+        });
 
-  it("Increments the counter", async () => {
-    const baseAccount = _baseAccount;
+        // Fetch the account details of the created voucher.
+        const voucherAccount = await program.account.voucher.fetch(voucher.publicKey);
 
-    await program.rpc.increment({
-      accounts: {
-        baseAccount: baseAccount.publicKey,
-      },
+        // Ensure it has the right data.
+        assert.equal(voucherAccount.sender.toBase58(), otherUser.publicKey.toBase58());
+        assert.equal(voucherAccount.fromEmail, 'ab@ab.com');
+        assert.equal(voucherAccount.toEmail, 'blah@blah.com');
+        assert.equal(voucherAccount.tokenCount,5);
+        assert.equal(voucherAccount.validDays, 2);
+        assert.ok(voucherAccount.timestamp);
     });
 
-    const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-    console.log('Count 1: ', account.count.toString())
-    assert.ok(account.count.toString() == 1);
-  });
+    it('cannot provide a fromEmail with more than 200 characters', async () => {
+        try {
+            const voucher = anchor.web3.Keypair.generate();
+            const emailWith201Chars = 'x'.repeat(201);
+            await program.rpc.sendVoucher(emailWith201Chars, 'b@b.com', 2, 3, {
+                accounts: {
+                    voucher: voucher.publicKey,
+                    sender: program.provider.wallet.publicKey,
+                    systemProgram: anchor.web3.SystemProgram.programId,
+                },
+                signers: [voucher],
+            });
+        } catch (error) {
+            assert.equal(error.msg, 'The provided email should be 200 characters long maximum.');
+            return;
+        }
+
+        assert.fail('The instruction should have failed with a 201-character fromEmail.');
+    });
+
+    it('cannot provide a toEmail with more than 200 characters', async () => {
+        try {
+            const voucher = anchor.web3.Keypair.generate();
+            const emailWith201Chars = 'x'.repeat(201);
+            await program.rpc.sendVoucher('a@a.com', emailWith201Chars, 2, 3, {
+                accounts: {
+                    voucher: voucher.publicKey,
+                    sender: program.provider.wallet.publicKey,
+                    systemProgram: anchor.web3.SystemProgram.programId,
+                },
+                signers: [voucher],
+            });
+        } catch (error) {
+            assert.equal(error.msg, 'The provided email should be 200 characters long maximum.');
+            return;
+        }
+
+        assert.fail('The instruction should have failed with a 201-character toEmail.');
+    });
+
+    it('can fetch all vouchers', async () => {
+        const voucherAccounts = await program.account.voucher.all();
+        assert.equal(voucherAccounts.length, 2);
+    });
+
+    it('can filter vouchers by sender', async () => {
+        const senderPublicKey = program.provider.wallet.publicKey
+        const voucherAccounts = await program.account.voucher.all([
+            {
+                memcmp: {
+                    offset: 8, // Discriminator.
+                    bytes: senderPublicKey.toBase58(),
+                }
+            }
+        ]);
+
+        assert.equal(voucherAccounts.length, 1);
+        assert.ok(voucherAccounts.every(voucherAccount => {
+            return voucherAccount.account.sender.toBase58() === senderPublicKey.toBase58()
+        }))
+    });
 });

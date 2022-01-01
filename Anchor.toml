@@ -1,6 +1,12 @@
 [programs.localnet]
 samo_manager = "FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G"
 
+[programs.devnet]
+samo_manager = "FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G"
+
+[programs.mainnet]
+samo_manager = "FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G"
+
 [registry]
 url = "https://anchor.projectserum.com"
 
@@ -8,5 +14,14 @@ url = "https://anchor.projectserum.com"
 cluster = "localnet"
 wallet = "/Users/sachin/.config/solana/id.json"
 
+#[provider]
+#cluster = "devnet"
+#wallet = "/Users/sachin/.config/solana/id.json"
+#
+#[provider]
+#cluster = "mainnet"
+#wallet = "/Users/sachin/.config/solana/id.json"
+
 [scripts]
 test = "yarn run mocha -t 1000000 tests/"
+copy-idl = "mkdir -p app/src/idl && cp target/idl/samo_manager.json app/src/idl/samo_manager.json"
