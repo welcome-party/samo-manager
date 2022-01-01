@@ -1,18 +1,13 @@
 # samo-manager
-SAMO smart contract
+Rust & react app that makes it easy for people to join Solana Blockchain.
+(https://welcome-party.netlify.app/)
 
-# Good resources
-* https://lorisleiva.com/create-a-solana-dapp-from-scratch/getting-started-with-solana-and-anchor
-* https://dev.to/dabit3/the-complete-guide-to-full-stack-solana-development-with-react-anchor-rust-and-phantom-3291
+# Build, deploy and start locally:
 
-
-# Build, deploy and start a local ledger.
-
-## Make sure you’re on the localnet.
 ```
 solana config set --url localhost
 ```
-And update your Anchor.toml file.
+Update your Anchor.toml file if need be
 
 ## Run the tests.
 ```
@@ -57,3 +52,8 @@ solana config set --url devnet
 anchor build
 anchor deploy
 ```
+
+# Good resources
+For installation and example instructions:
+* https://lorisleiva.com/create-a-solana-dapp-from-scratch/getting-started-with-solana-and-anchor
+* https://dev.to/dabit3/the-complete-guide-to-full-stack-solana-development-with-react-anchor-rust-and-phantom-3291
