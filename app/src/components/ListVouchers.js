@@ -1,8 +1,9 @@
 import React from 'react';
+import './ListVouchers.css';
 
 const ListVouchers = () => {
     return (
-        <div>
+        <div className='Content'>
             ListVouchers
         </div>
     );

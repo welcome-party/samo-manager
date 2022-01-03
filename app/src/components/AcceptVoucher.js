@@ -1,8 +1,9 @@
 import React from 'react';
+import './AcceptVoucher.css';
 
 const AcceptVoucher = () => {
     return (
-        <div>
+        <div className='Content'>
             AcceptVoucher
         </div>
     );
