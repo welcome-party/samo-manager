@@ -64,7 +64,7 @@ function SendVoucher() {
                 signers: [voucherAccount]
             });
 
-            const voucher = await program.account.voucherAccount.fetch(voucherAccount.publicKey);
+            const voucher = await program.account.voucher.fetch(voucherAccount.publicKey);
             console.log('voucher: ', voucher);
 
             // Send email
