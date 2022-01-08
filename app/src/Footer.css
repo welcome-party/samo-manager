@@ -1,0 +1,45 @@
+.footer {
+  position: absolute;
+  width: 1440px;
+  height: 129px;
+  left: 0px;
+  top: 871px;
+  
+  background: #1D233E
+}
+
+.link-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  text-decoration: none;
+
+  color: #FFFFFF;
+
+}
+
+.social-link {
+  position: absolute;
+  width: 56px;
+  height: 16px;
+  left: 196px;
+  top: 50px;
+}
+
+.company-link {
+  position: absolute;
+  width: 67px;
+  height: 16px;
+  left: 1060px;
+  top: 50px;
+}
+
+.support-link {
+  position: absolute;
+  width: 61px;
+  height: 16px;
+  left: 1161px;
+  top: 50px;  
+}

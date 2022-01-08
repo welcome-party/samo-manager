@@ -4,13 +4,13 @@ import { useState } from "react";
 
 import { Connection, PublicKey } from '@solana/web3.js';
 import {
-    Program, Provider, web3
+    Program, Provider
 } from '@project-serum/anchor';
 import idl from '../idl/samo_manager.json';
 
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import './ListVouchers.css';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
@@ -19,11 +19,6 @@ const wallets = [
     /* view list of available wallets at https://github.com/solana-labs/wallet-adapter#wallets */
     getPhantomWallet()
 ]
-
-const { SystemProgram, Keypair } = web3;
-
-/* create an account  */
-const voucherAccount = Keypair.generate();
 
 const opts = {
     preflightCommitment: "processed"

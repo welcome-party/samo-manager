@@ -1,31 +1,38 @@
 .header {
-  display: flex;
-  justify-content: center;
+  position: absolute;
+  width: 1440px;
+  height: 72px;
+  left: 0px;
+  top: 2px;
+  background: #1D233E;
 }
 
-.headerlink-title {
-  color: black;
+.link-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
   text-decoration: none;
-  padding: 0 5px;
+
+  color: #FFFFFF;
+
 }
 
-.headerlink-dot {
-  margin-top: -0.5rem;
-  opacity: 0;
-  text-align: center;
-  transition: opacity 200ms linear;
+.welcome-party-logo-header {
+  position: absolute;
+  width: 188px;
+  height: 35px;
+  left: 139px;
+  top: 21px;
+
+  background: url(assets/welcome_party_logo_header.png);
 }
 
-.headerlink-title:hover .headerlink-dot {
-  opacity: 1;
-}
-
-.headerlink-dot-active {
-  margin-top: -0.5rem;
-  text-align: center;
-  display: block;
-}
-
-.headerlink-no-link {
-  pointer-events: none;
+.list-voucher-header-link {
+  position: absolute;
+  width: 150px;
+  height: 16px;
+  left: 1115px;
+  top: 30px;
 }

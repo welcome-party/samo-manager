@@ -1,3 +1,165 @@
-.Content {
-    margin: 2%;
-  }
+.content {
+}
+
+
+
+.small-text {
+  font-family: Roboto;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 16px;
+  
+  color: #1EA8E3;
+}
+
+.medium-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 21px;  
+  
+  color: #FFFFFF;  
+}
+
+.large-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  
+  color: #FFFFFF;
+}
+
+
+.welcome-party-logo {
+  position: absolute;
+  width: 443px;
+  height: 83px;
+  left: 146px;
+  top: 281px;
+  
+  background: url(../assets/welcome_party_logo_main.png);  
+}
+
+.samo-moon-message {
+  position: absolute;
+  width: 165px;
+  height: 16px;
+  left: 259px;
+  top: 363px;
+}
+
+.welcome-party-message {
+  position: absolute;
+  width: 437px;
+  height: 84px;
+  left: 129px;
+  top: 443px;
+}
+
+.backed-by-team-message {
+  position: absolute;
+  width: 363px;
+  height: 21px;
+  left: 168px;
+  top: 597px;
+}
+
+.samo-logo {
+  vertical-align: middle;
+}
+
+.input-area {
+  position: absolute;
+  width: 554px;
+  height: 587px;
+  left: 676px;
+  top: 162px;
+  
+  background: linear-gradient(209.98deg, #449AD8 6.44%, #640E56 102.02%);
+  border-radius: 30px;  
+}
+
+.input-field {  
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid #FFFFFF;
+  box-sizing: border-box;
+  border-radius: 14px;
+  padding: 20px; 
+}
+
+.your-name-text {
+  position: absolute;
+  width: 115px;
+  height: 28px;
+  left: 50px;
+  top: 100px;
+}
+
+.your-name-input {
+  position: absolute;
+  width: 241px;
+  height: 55px;
+  left: 250px;
+  top: 90px;
+}
+
+.recipient-name-text {
+  position: absolute;
+  width: 181px;
+  height: 28px;
+  left: 50px;
+  top: 200px;
+}
+
+.recipient-name-input {
+  position: absolute;
+  width: 241px;
+  height: 55px;
+  left: 250px;
+  top: 190px;
+}
+
+.samo-to-send-text {
+  position: absolute;
+  width: 166px;
+  height: 28px;
+  left: 50px;
+  top: 300px;
+}
+
+.samo-to-send-input {
+  position: absolute;
+  width: 241px;
+  height: 55px;
+  left: 250px;
+  top: 290px;
+}
+
+.send-samo-button {
+  position: absolute;
+  width: 365px;
+  height: 65px;
+  left: 100px;
+  top: 450px;
+}
+
+.send-samo-button:enabled {
+  background: #FF60FD;
+  border: 1px solid #FF60FD;
+  box-sizing: border-box;
+  border-radius: 32px;  
+}
+
+.send-samo-button:disabled {
+  background: rgba(115, 77, 114, 0.3);
+  border: 1px solid rgba(255, 96, 253, 0.3);
+  box-sizing: border-box;
+  border-radius: 32px;
+
+  color: rgba(255, 255, 255, 0.3);
+}
