@@ -23,11 +23,11 @@
       ],
       "args": [
         {
-          "name": "fromEmail",
+          "name": "fromName",
           "type": "string"
         },
         {
-          "name": "toEmail",
+          "name": "toName",
           "type": "string"
         },
         {
@@ -56,11 +56,11 @@
             "type": "i64"
           },
           {
-            "name": "fromEmail",
+            "name": "fromName",
             "type": "string"
           },
           {
-            "name": "toEmail",
+            "name": "toName",
             "type": "string"
           },
           {
@@ -78,8 +78,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "EmailTooLong",
-      "msg": "The provided email should be 200 characters long maximum."
+      "name": "NameTooLong",
+      "msg": "The provided name should be 200 characters long maximum."
     },
     {
       "code": 6001,

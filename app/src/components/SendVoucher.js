@@ -12,6 +12,7 @@ import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import './SendVoucher.css';
+import './WalletAdaptor.css';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 
@@ -34,8 +35,8 @@ function SendVoucher() {
     const wallet = useWallet();
     const history = useHistory();
 
-    const [fromEmail, setFromEmail] = useState("");
-    const [toEmail, setToEmail] = useState("");
+    const [fromName, setFromName] = useState("");
+    const [toName, setToName] = useState("");
     const [tokenCount, setTokenCount] = useState("");
     const validDays = 5;
 
@@ -55,7 +56,7 @@ function SendVoucher() {
         const program = new Program(idl, programID, provider);
 
         try {
-            await program.rpc.sendVoucher(fromEmail, toEmail, tokenCount, validDays, {
+            await program.rpc.sendVoucher(fromName, toName, tokenCount, validDays, {
                 accounts: {
                     voucher: voucherAccount.publicKey,
                     sender: provider.wallet.publicKey,
@@ -71,32 +72,35 @@ function SendVoucher() {
 
             alert('Successfully created voucher and sent email');
 
-            history.push('/home');
+            history.push('/');
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
-            history.push('/home');
+            history.push('/');
         }
     }
 
     return (
-        <div className='Content'>
-            <form onSubmit={sendVoucher}>
-                From: <label><input type="email" value={fromEmail} onChange={(e) => setFromEmail(e.target.value)} required/></label> <br /><br />
-                Hi <label><input type="email" value={toEmail} onChange={(e) => setToEmail(e.target.value)} required/></label>,<br /><br />
-                I want to send you <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required/></label> SAMO tokens. SAMO is the ambassador to the Solana ecosystem and is here to help you get on board.<br /><br />
-                To receive your tokens, just click on the link below to install a wallet. Once installed, the tokens will be there in your wallet. From there we'll show you all the amazing things you can do with them.<br /><br />
-
-                <a href='https://welcome-party.netlify.app/accept-voucher?voucher=xxx'>Install Wallet and Inform sender</a><br /><br />
-
-                Welcome to Solana!<br /><br /><br /><br />
+        <div className='content'>
+            <span className='welcome-party-logo'></span>
+            <div className='samo-moon-message small-text'>Let's get Samo to the moon</div>
+            <div className='welcome-party-message large-text'>Welcome party allows you get free $SAMO for onoarding friends onto Phantom</div>
+            <div className='backed-by-team-message medium-text'>Backed by the <img src={require('../assets/samo_logo.png')} className='samo-logo' alt='SAMO'></img> team</div>
+            <div className='input-area'>
                 {
                     !wallet.connected && <WalletMultiButton />
                 }
-                {
-                    wallet.connected && <input type="submit" />
-                }
-            </form>
+                <form onSubmit={sendVoucher}>
+                    <div className='large-text your-name-text'> Your name</div>
+                    <label><input type="text" value={fromName} onChange={(e) => setFromName(e.target.value)} required className='input-field your-name-input large-text' /></label>
+                    <div className='large-text recipient-name-text'> Recipient's name</div>
+                    <label><input type="text" value={toName} onChange={(e) => setToName(e.target.value)} required className='input-field recipient-name-input large-text' /></label>
+                    <div className='large-text samo-to-send-text'> $SAMO to send</div>
+                    <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field samo-to-send-input large-text' /></label>
+
+                    <input type="submit" disabled={!wallet.connected} className='send-samo-button large-text' value='Send SAMO!'/>
+                </form>
+            </div>
         </div>
     );
 }

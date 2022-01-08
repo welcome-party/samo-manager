@@ -7,17 +7,17 @@ declare_id!("FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G");
 pub mod samo_manager {
     use super::*;
 
-    pub fn send_voucher(ctx: Context<SendVoucher>, from_email: String, to_email: String, token_count: i16, valid_days: i16) -> ProgramResult {
+    pub fn send_voucher(ctx: Context<SendVoucher>, from_name: String, to_name: String, token_count: i16, valid_days: i16) -> ProgramResult {
         let voucher: &mut Account<Voucher> = &mut ctx.accounts.voucher;
         let sender: &Signer = &ctx.accounts.sender;
         let clock: Clock = Clock::get().unwrap();
 
-        if from_email.chars().count() > 200 {
-            return Err(ErrorCode::EmailTooLong.into());
+        if from_name.chars().count() > 200 {
+            return Err(ErrorCode::NameTooLong.into());
         }
 
-        if to_email.chars().count() > 200 {
-            return Err(ErrorCode::EmailTooLong.into());
+        if to_name.chars().count() > 200 {
+            return Err(ErrorCode::NameTooLong.into());
         }
 
         if token_count <= 0 {
@@ -30,8 +30,8 @@ pub mod samo_manager {
 
         voucher.sender = *sender.key;
         voucher.timestamp = clock.unix_timestamp;
-        voucher.from_email = from_email;
-        voucher.to_email = to_email;
+        voucher.from_name = from_name;
+        voucher.to_name = to_name;
         voucher.token_count = token_count;
         voucher.valid_days = valid_days;
 
@@ -53,8 +53,8 @@ pub struct SendVoucher<'info> {
 pub struct Voucher {
     pub sender: Pubkey,
     pub timestamp: i64,
-    pub from_email: String,
-    pub to_email: String,
+    pub from_name: String,
+    pub to_name: String,
     pub token_count: i16,
     pub valid_days: i16,
 }
@@ -64,9 +64,9 @@ const PUBLIC_KEY_LENGTH: usize = 32;
 const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4;
 // Stores the size of the string.
-const MAX_FROM_EMAIL_LENGTH: usize = 200 * 4;
+const MAX_FROM_NAME_LENGTH: usize = 200 * 4;
 // 200 chars max.
-const MAX_TO_EMAIL_LENGTH: usize = 200 * 4;
+const MAX_TO_NAME_LENGTH: usize = 200 * 4;
 // 200 chars max.
 const TOKEN_COUNT_LENGTH: usize = 2;
 const VALID_DAYS_LENGTH: usize = 2;
@@ -75,16 +75,16 @@ impl Voucher {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Sender.
         + TIMESTAMP_LENGTH // Timestamp.
-        + STRING_LENGTH_PREFIX + MAX_FROM_EMAIL_LENGTH // From Email.
-        + STRING_LENGTH_PREFIX + MAX_TO_EMAIL_LENGTH // To Email.
+        + STRING_LENGTH_PREFIX + MAX_FROM_NAME_LENGTH // From Email.
+        + STRING_LENGTH_PREFIX + MAX_TO_NAME_LENGTH // To Email.
         + TOKEN_COUNT_LENGTH // Token Count.
         + VALID_DAYS_LENGTH; // Valid days.
 }
 
 #[error]
 pub enum ErrorCode {
-    #[msg("The provided email should be 200 characters long maximum.")]
-    EmailTooLong,
+    #[msg("The provided name should be 200 characters long maximum.")]
+    NameTooLong,
     #[msg("The provided tokens should be more than 0")]
     InvalidTokenCount,
     #[msg("The provided validity period for voucher should be more than 0 days")]
