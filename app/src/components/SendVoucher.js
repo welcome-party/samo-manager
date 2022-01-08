@@ -67,10 +67,8 @@ function SendVoucher() {
 
             const voucher = await program.account.voucher.fetch(voucherAccount.publicKey);
             console.log('voucher: ', voucher);
-
-            // Send email
-
-            alert('Successfully created voucher and sent email');
+            
+            alert('Successfully created voucher');
 
             history.push('/');
         } catch (err) {

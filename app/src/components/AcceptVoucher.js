@@ -3,7 +3,7 @@ import './AcceptVoucher.css';
 
 const AcceptVoucher = () => {
     return (
-        <div className='Content'>
+        <div className='content'>
             AcceptVoucher
         </div>
     );

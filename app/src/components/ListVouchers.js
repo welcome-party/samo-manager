@@ -50,14 +50,16 @@ function ListVouchers() {
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
-            history.push('/home');
+            history.push('/');
         }
     }
 
     return (
-        <div className='Content'>
-            <button onClick={listVouchers}>Fetch All</button>
-            {vouchers.map((voucher, key) => <div key= {key}>{voucher.account.fromEmail}</div>)}
+        <div className='content'>
+            <button onClick={listVouchers} className='fetch-all-button'>Fetch All</button>
+            <div className='list-area'>
+                {vouchers.map((voucher, key) => <div key= {key} className='medium-text'>From:  {voucher.account.fromName} , To:  {voucher.account.toName},  $SAMO:  {voucher.account.tokenCount}, Valid For Days:  {voucher.account.validDays} </div>)}
+            </div>
         </div>
     );
 }

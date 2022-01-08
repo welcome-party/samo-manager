@@ -1,3 +1,4 @@
-.Content {
-    margin: 2%;
-  }
+.content {
+    position: absolute;
+    top: 72px;
+}
