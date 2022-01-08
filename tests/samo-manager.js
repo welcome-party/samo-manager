@@ -22,8 +22,8 @@ describe('samo-manager', () => {
 
         // Ensure it has the right data.
         assert.equal(voucherAccount.sender.toBase58(), program.provider.wallet.publicKey.toBase58());
-        assert.equal(voucherAccount.fromEmail, 'a@a.com');
-        assert.equal(voucherAccount.toEmail, 'b@b.com');
+        assert.equal(voucherAccount.fromName, 'a@a.com');
+        assert.equal(voucherAccount.toName, 'b@b.com');
         assert.equal(voucherAccount.tokenCount, 2);
         assert.equal(voucherAccount.validDays, 3);
         assert.ok(voucherAccount.timestamp);
@@ -51,18 +51,18 @@ describe('samo-manager', () => {
 
         // Ensure it has the right data.
         assert.equal(voucherAccount.sender.toBase58(), otherUser.publicKey.toBase58());
-        assert.equal(voucherAccount.fromEmail, 'ab@ab.com');
-        assert.equal(voucherAccount.toEmail, 'blah@blah.com');
+        assert.equal(voucherAccount.fromName, 'ab@ab.com');
+        assert.equal(voucherAccount.toName, 'blah@blah.com');
         assert.equal(voucherAccount.tokenCount,5);
         assert.equal(voucherAccount.validDays, 2);
         assert.ok(voucherAccount.timestamp);
     });
 
-    it('cannot provide a fromEmail with more than 200 characters', async () => {
+    it('cannot provide a fromName with more than 200 characters', async () => {
         try {
             const voucher = anchor.web3.Keypair.generate();
-            const emailWith201Chars = 'x'.repeat(201);
-            await program.rpc.sendVoucher(emailWith201Chars, 'b@b.com', 2, 3, {
+            const nameWith201Chars = 'x'.repeat(201);
+            await program.rpc.sendVoucher(nameWith201Chars, 'b@b.com', 2, 3, {
                 accounts: {
                     voucher: voucher.publicKey,
                     sender: program.provider.wallet.publicKey,
@@ -71,18 +71,18 @@ describe('samo-manager', () => {
                 signers: [voucher],
             });
         } catch (error) {
-            assert.equal(error.msg, 'The provided email should be 200 characters long maximum.');
+            assert.equal(error.msg, 'The provided name should be 200 characters long maximum.');
             return;
         }
 
-        assert.fail('The instruction should have failed with a 201-character fromEmail.');
+        assert.fail('The instruction should have failed with a 201-character fromName.');
     });
 
-    it('cannot provide a toEmail with more than 200 characters', async () => {
+    it('cannot provide a toName with more than 200 characters', async () => {
         try {
             const voucher = anchor.web3.Keypair.generate();
-            const emailWith201Chars = 'x'.repeat(201);
-            await program.rpc.sendVoucher('a@a.com', emailWith201Chars, 2, 3, {
+            const nameWith201Chars = 'x'.repeat(201);
+            await program.rpc.sendVoucher('a@a.com', nameWith201Chars, 2, 3, {
                 accounts: {
                     voucher: voucher.publicKey,
                     sender: program.provider.wallet.publicKey,
@@ -91,11 +91,11 @@ describe('samo-manager', () => {
                 signers: [voucher],
             });
         } catch (error) {
-            assert.equal(error.msg, 'The provided email should be 200 characters long maximum.');
+            assert.equal(error.msg, 'The provided name should be 200 characters long maximum.');
             return;
         }
 
-        assert.fail('The instruction should have failed with a 201-character toEmail.');
+        assert.fail('The instruction should have failed with a 201-character toName.');
     });
 
     it('can fetch all vouchers', async () => {
