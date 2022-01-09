@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Connection, PublicKey } from '@solana/web3.js';
 import {
@@ -39,9 +39,7 @@ function ListVouchers() {
         return provider;
     }
 
-    async function listVouchers(event) {
-        event.preventDefault();
-
+    async function listVouchers() {
         const provider = await getProvider()
         const program = new Program(idl, programID, provider);
 
@@ -54,11 +52,15 @@ function ListVouchers() {
         }
     }
 
+    useEffect(() => {
+        listVouchers();
+    }, []);
+
+
     return (
         <div className='content'>
-            <button onClick={listVouchers} className='fetch-all-button'>Fetch All</button>
             <div className='list-area'>
-                {vouchers.map((voucher, key) => <div key= {key} className='medium-text'>From:  {voucher.account.fromName} , To:  {voucher.account.toName},  $SAMO:  {voucher.account.tokenCount}, Valid For Days:  {voucher.account.validDays} </div>)}
+                {vouchers.map((voucher, key) => <div key={key} className='medium-text'>From:  {voucher.account.fromName} , To:  {voucher.account.toName},  $SAMO:  {voucher.account.tokenCount}, Valid For Days:  {voucher.account.validDays} </div>)}
             </div>
         </div>
     );

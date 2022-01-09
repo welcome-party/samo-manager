@@ -1,16 +1,3 @@
-.fetch-all-button {
-    position: absolute;
-    width: 100px;
-    height: 30px;
-    left: 50px;
-    top: 20px; 
-
-    background: #FF60FD;
-    border: 1px solid #FF60FD;
-    box-sizing: border-box;
-    border-radius: 32px;    
-}
-
 .list-area {
     position: absolute;
     left: 50px;
