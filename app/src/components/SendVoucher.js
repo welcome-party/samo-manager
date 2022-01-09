@@ -87,7 +87,7 @@ function SendVoucher() {
                     voucher && <div>
                         <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
                         <div className='success-message large-text'>Success! Here’s your unique share link:</div>
-                        <div className='share-link-field share-link-text'>https://welcome-party.netlify.app/accept-voucher?voucherAccount={voucherAccount.publicKey.toBase58()}</div>
+                        <div className='share-link-field share-link-text'>{window.location.href}accept-voucher?voucherAccount={voucherAccount.publicKey.toBase58()}</div>
                         <div className='friend-installs-message medium-text'>Once your friend installs Phantom...</div>
                     </div>
                 }
