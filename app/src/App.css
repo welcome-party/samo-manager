@@ -7,3 +7,39 @@
   
   background: #14192E;
 }
+
+.content {
+    position: absolute;
+    top: 72px;
+}
+
+.small-text {
+  font-family: Roboto;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 16px;
+
+  color: #1EA8E3;
+}
+
+.medium-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 21px;
+
+  color: #FFFFFF;
+}
+
+.large-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+
+  color: #FFFFFF;
+}

@@ -1,0 +1,37 @@
+.welcome-party-logo {
+  position: absolute;
+  width: 443px;
+  height: 83px;
+  left: 146px;
+  top: 281px;
+  
+  background: url(../../assets/welcome_party_logo_main.png);
+}
+
+.samo-moon-message {
+  position: absolute;
+  width: 165px;
+  height: 16px;
+  left: 259px;
+  top: 363px;
+}
+
+.welcome-party-message {
+  position: absolute;
+  width: 437px;
+  height: 84px;
+  left: 129px;
+  top: 443px;
+}
+
+.backed-by-team-message {
+  position: absolute;
+  width: 363px;
+  height: 21px;
+  left: 168px;
+  top: 597px;
+}
+
+.samo-logo {
+  vertical-align: middle;
+}

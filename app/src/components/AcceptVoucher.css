@@ -1,4 +1,11 @@
-.content {
+.input-area {
     position: absolute;
-    top: 72px;
-}
+    width: 554px;
+    height: 587px;
+    left: 676px;
+    top: 162px;
+    
+    background: linear-gradient(209.98deg, #449AD8 6.44%, #640E56 102.02%);
+    border-radius: 30px;  
+  }
+  

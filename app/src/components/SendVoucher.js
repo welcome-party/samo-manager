@@ -13,6 +13,7 @@ import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-ad
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import './SendVoucher.css';
 import './WalletAdaptor.css';
+import WelcomePartyInfo from './subcomponents/WelcomePartyInfo.js';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 
@@ -79,10 +80,7 @@ function SendVoucher() {
 
     return (
         <div className='content'>
-            <span className='welcome-party-logo'></span>
-            <div className='samo-moon-message small-text'>Let's get Samo to the moon</div>
-            <div className='welcome-party-message large-text'>Welcome party allows you get free $SAMO for onoarding friends onto Phantom</div>
-            <div className='backed-by-team-message medium-text'>Backed by the <img src={require('../assets/samo_logo.png')} className='samo-logo' alt='SAMO'></img> team</div>
+            <WelcomePartyInfo />
             <div className='input-area'>
                 {
                     !wallet.connected && <WalletMultiButton />
