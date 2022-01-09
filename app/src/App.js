@@ -10,7 +10,7 @@ import AcceptVoucher from './components/AcceptVoucher';
 
 function App() {
   return (
-    <div className='App'>
+    <div className='app'>
       <Router>
         <Header />
         <Route exact path='/' component={SendVoucher} />
