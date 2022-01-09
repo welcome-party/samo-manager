@@ -77,7 +77,7 @@ function AcceptVoucher() {
                     <div className='step2-message-left'>STEP 2</div>
                     <div className='step2-message-right'>
                         {
-                            <div className='wallet-connect-button'><WalletMultiButton /></div>
+                            <div className='receiver-wallet-connect-button'><WalletMultiButton /></div>
                         }
                     </div>
                     <div className='step3-message-left'>STEP 3</div>

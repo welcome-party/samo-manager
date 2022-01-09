@@ -10,23 +10,9 @@
   border-radius: 30px;  
 }
 
-.wallet-connect-button {
+.sender-wallet-connect-button {
   margin-left: 180px;
   margin-top: 10px;
-}
-
-.wallet-address-area {
-  position: absolute;
-  width: 490px;
-  height: 27px;
-  left: 25px;
-  top: 20px;
-  text-align: center;
-  padding: 5px;
-  
-  background: rgba(108, 56, 108, 0.43);
-  border: 2px solid #FFFFFF;
-  border-radius: 14px;
 }
 
 .input-field {  

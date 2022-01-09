@@ -82,12 +82,7 @@ function SendVoucher() {
         <div className='content'>
             <WelcomePartyInfo />
             <div className='input-area'>
-                {
-                    !wallet.connected && <div className='wallet-connect-button'><WalletMultiButton /></div>
-                }
-                {
-                    wallet.connected && <div className='wallet-address-area medium-text'>{wallet.publicKey.toBase58()}</div>
-                }
+                <div className='sender-wallet-connect-button'><WalletMultiButton /></div>
                 {
                     voucher && <div>
                         <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
