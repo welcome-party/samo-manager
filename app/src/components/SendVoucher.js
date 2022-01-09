@@ -83,7 +83,7 @@ function SendVoucher() {
             <WelcomePartyInfo />
             <div className='input-area'>
                 {
-                    !wallet.connected && <WalletMultiButton />
+                    !wallet.connected && <div className='wallet-connect-button'><WalletMultiButton /></div>
                 }
                 {
                     wallet.connected && <div className='wallet-address-area medium-text'>{wallet.publicKey.toBase58()}</div>

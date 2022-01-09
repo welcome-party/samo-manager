@@ -10,6 +10,11 @@
   border-radius: 30px;  
 }
 
+.wallet-connect-button {
+  margin-left: 180px;
+  margin-top: 10px;
+}
+
 .wallet-address-area {
   position: absolute;
   width: 490px;

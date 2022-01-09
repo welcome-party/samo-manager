@@ -9,9 +9,10 @@ import idl from '../idl/samo_manager.json';
 
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 import './AcceptVoucher.css';
+import './WalletAdaptor.css';
 import WelcomePartyInfo from './subcomponents/WelcomePartyInfo.js';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
@@ -66,10 +67,22 @@ function AcceptVoucher() {
         <div className='content'>
             <WelcomePartyInfo />
             {
-                !voucher && <div className='input-area'>Invalid Voucher</div>
+                !voucher && <div className='input-area large-text'><div className='invalid-message'>Invalid Voucher</div></div>
             }
             {
-                voucher && <div className='input-area'> Valid Voucher {voucher.fromName}</div>
+                voucher && <div className='input-area large-text'>
+                    <div className='invite-message'>{voucher.fromName} has invited you to join them and get free {voucher.tokenCount} $SAMO</div>
+                    <div className='step1-message-left'>STEP 1</div>
+                    <div className='step1-message-right'>Install the Phantom Wallet on your Browser</div>
+                    <div className='step2-message-left'>STEP 2</div>
+                    <div className='step2-message-right'>
+                        {
+                            <div className='wallet-connect-button'><WalletMultiButton /></div>
+                        }
+                    </div>
+                    <div className='step3-message-left'>STEP 3</div>
+                    <div className='step3-message-right'><img src={require('../assets/success_logo.png')} className='step3-success-logo' alt='Success'></img></div>
+                </div>
             }
 
         </div>

@@ -9,3 +9,80 @@
     border-radius: 30px;  
   }
   
+  .wallet-connect-button {
+    margin-left: 100px;
+    margin-top: -10px;
+  }
+  
+  .invalid-message {
+    position: absolute;
+    width: 503px;
+    height: 56px;
+    left: 10px;
+    top: 10px;    
+  }
+
+  .invite-message {
+    position: absolute;
+    width: 503px;
+    height: 56px;
+    left: 10px;
+    top: 10px;    
+  }
+
+  .step1-message-left {
+    position: absolute;
+    width: 78px;
+    height: 31px;
+    left: 30px;
+    top: 120px;     
+  }
+
+  .step1-message-right {
+    position: absolute;
+    width: 450px;
+    height: 31px;
+    left: 100px;
+    top: 120px;   
+  }
+
+  .step2-message-left {
+    position: absolute;
+    width: 78px;
+    height: 31px;
+    left: 30px;
+    top: 300px;    
+  }
+
+  .step2-message-right {
+    position: absolute;
+    width: 500px;
+    height: 100px;
+    left: 50px;
+    top: 300px;    
+  }
+
+  .step3-message-left {
+    position: absolute;
+    width: 78px;
+    height: 31px;
+    left: 30px;
+    top: 400px;    
+  }
+
+  .step3-message-right {
+    position: absolute;
+    width: 321px;
+    height: 55px;
+    left: 50px;
+    top: 400px;    
+  }
+
+  .step3-success-logo {
+    position: absolute;
+    width: 109px;
+    height: 109px;
+    left: 100px;
+    top: -30px;
+  }
+  
