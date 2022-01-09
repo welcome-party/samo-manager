@@ -38,6 +38,7 @@ function SendVoucher() {
     const [fromName, setFromName] = useState("");
     const [toName, setToName] = useState("");
     const [tokenCount, setTokenCount] = useState("");
+    const [voucher, setVoucher] = useState("");
     const validDays = 5;
 
     async function getProvider() {
@@ -66,11 +67,9 @@ function SendVoucher() {
             });
 
             const voucher = await program.account.voucher.fetch(voucherAccount.publicKey);
-            console.log('voucher: ', voucher);
-            
-            alert('Successfully created voucher');
-
-            history.push('/');
+            if (voucher) {
+                setVoucher(voucher);
+            }
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
@@ -88,16 +87,30 @@ function SendVoucher() {
                 {
                     !wallet.connected && <WalletMultiButton />
                 }
-                <form onSubmit={sendVoucher}>
-                    <div className='large-text your-name-text'> Your name</div>
-                    <label><input type="text" value={fromName} onChange={(e) => setFromName(e.target.value)} required className='input-field your-name-input large-text' /></label>
-                    <div className='large-text recipient-name-text'> Recipient's name</div>
-                    <label><input type="text" value={toName} onChange={(e) => setToName(e.target.value)} required className='input-field recipient-name-input large-text' /></label>
-                    <div className='large-text samo-to-send-text'> $SAMO to send</div>
-                    <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field samo-to-send-input large-text' /></label>
+                {
+                    wallet.connected && <div className='wallet-address-area medium-text'>{wallet.publicKey.toBase58()}</div>
+                }
+                {
+                    voucher && <div>
+                        <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
+                        <div className='success-message large-text'>Success! Here’s your unique share link:</div>
+                        <div className='share-link-field share-link-text'>https://welcome-party.netlify.app/accept-voucher?voucherAccount={voucherAccount.publicKey.toBase58()}</div>
+                        <div className='friend-installs-message medium-text'>Once your friend installs Phantom...</div>
+                    </div>
+                }
+                {
+                    !voucher && <form onSubmit={sendVoucher}>
+                        <div className='large-text your-name-text'> Your name</div>
+                        <label><input type="text" value={fromName} onChange={(e) => setFromName(e.target.value)} required className='input-field your-name-input large-text' /></label>
+                        <div className='large-text recipient-name-text'> Recipient's name</div>
+                        <label><input type="text" value={toName} onChange={(e) => setToName(e.target.value)} required className='input-field recipient-name-input large-text' /></label>
+                        <div className='large-text samo-to-send-text'> $SAMO to send</div>
+                        <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field samo-to-send-input large-text' /></label>
 
-                    <input type="submit" disabled={!wallet.connected} className='send-samo-button large-text' value='Send SAMO!'/>
-                </form>
+                        <input type="submit" disabled={!wallet.connected} className='send-samo-button large-text' value='Send SAMO!' />
+                    </form>
+
+                }
             </div>
         </div>
     );

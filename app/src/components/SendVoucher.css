@@ -84,6 +84,20 @@
   border-radius: 30px;  
 }
 
+.wallet-address-area {
+  position: absolute;
+  width: 490px;
+  height: 27px;
+  left: 25px;
+  top: 20px;
+  text-align: center;
+  padding: 5px;
+  
+  background: rgba(108, 56, 108, 0.43);
+  border: 2px solid #FFFFFF;
+  border-radius: 14px;
+}
+
 .input-field {  
   background: rgba(0, 0, 0, 0.26);
   border: 1px solid #FFFFFF;
@@ -162,4 +176,53 @@
   border-radius: 32px;
 
   color: rgba(255, 255, 255, 0.3);
+}
+
+.success-logo {
+  position: absolute;
+  width: 179px;
+  height: 179px;
+  left: 170px;
+  top: 170px;
+
+  background: url(../assets/success_logo.png);
+}
+
+.success-message {
+  position: absolute;
+  width: 412px;
+  height: 28px;
+  left: 50px;
+  top: 350px;
+}
+
+.share-link-field {
+  position: absolute;
+  width: 444px;
+  height: 60px;
+  left: 50px;
+  top: 400px;
+  
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid #FF60FD;
+  box-sizing: border-box;
+  border-radius: 14px;  
+}
+
+.share-link-text {
+  padding: 10px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 8px;
+  line-height: 28px;
+  
+  color: #00BEE8;
+}
+
+.friend-installs-message {
+  position: absolute;
+  left: 150px;
+  top: 520px; 
+  text-align: center;
 }
