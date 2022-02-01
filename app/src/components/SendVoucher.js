@@ -2,10 +2,12 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useState } from "react";
 
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js';
+import * as anchor from '@project-serum/anchor';
 import {
     Program, Provider, web3
 } from '@project-serum/anchor';
+import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import idl from '../idl/samo_manager.json';
 
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
@@ -22,10 +24,13 @@ const wallets = [
     getPhantomWallet()
 ]
 
-const { SystemProgram, Keypair } = web3;
+const { Keypair } = web3;
 
 /* create an account  */
-const voucherAccount = Keypair.generate();
+const escrowAccount = Keypair.generate();
+const initializerMainAccount = Keypair.generate();
+const payer = Keypair.generate();
+const mintAuthority = Keypair.generate();
 
 const opts = {
     preflightCommitment: "processed"
@@ -40,7 +45,7 @@ function SendVoucher() {
     const [toName, setToName] = useState("");
     const [tokenCount, setTokenCount] = useState("");
     const [voucher, setVoucher] = useState("");
-    const validDays = 5;
+    // const validDays = 5;
 
     async function getProvider() {
         const connection = new Connection(clusterUrl, opts.preflightCommitment);
@@ -58,18 +63,104 @@ function SendVoucher() {
         const program = new Program(idl, programID, provider);
 
         try {
-            await program.rpc.sendVoucher(fromName, toName, tokenCount, validDays, {
-                accounts: {
-                    voucher: voucherAccount.publicKey,
-                    sender: provider.wallet.publicKey,
-                    systemProgram: SystemProgram.programId,
-                },
-                signers: [voucherAccount]
-            });
+            const [vault_account_pda, vault_account_bump] = await PublicKey.findProgramAddress(
+                [Buffer.from(anchor.utils.bytes.utf8.encode("B"))],
+                program.programId
+            );
 
-            const voucher = await program.account.voucher.fetch(voucherAccount.publicKey);
-            if (voucher) {
-                setVoucher(voucher);
+            // Airdropping tokens to a payer.
+            await provider.connection.confirmTransaction(
+                await provider.connection.requestAirdrop(payer.publicKey, 10000000000),
+                "processed"
+            );
+
+            console.log('Tokens airdropped to payer');
+
+            // Fund Main Accounts
+            await provider.send(
+                (() => {
+                    const tx = new Transaction();
+                    tx.add(
+                        SystemProgram.transfer({
+                            fromPubkey: payer.publicKey,
+                            toPubkey: initializerMainAccount.publicKey,
+                            lamports: 1000000000,
+                        })
+                    );
+                    return tx;
+                })(),
+                [payer]
+            );
+
+            console.log('Main Account funded');
+
+            const mintA = await Token.createMint(
+                provider.connection,
+                payer,
+                mintAuthority.publicKey,
+                null,
+                0,
+                TOKEN_PROGRAM_ID
+              );
+          
+              const mintB = await Token.createMint(
+                provider.connection,
+                payer,
+                mintAuthority.publicKey,
+                null,
+                0,
+                TOKEN_PROGRAM_ID
+              );
+          
+              const initializerTokenAccountA = await mintA.createAccount(initializerMainAccount.publicKey);
+              const initializerTokenAccountB = await mintB.createAccount(initializerMainAccount.publicKey);
+          
+              await mintA.mintTo(
+                initializerTokenAccountA,
+                mintAuthority.publicKey,
+                [mintAuthority],
+                tokenCount
+              );
+          
+            //   await mintB.mintTo(
+            //     takerTokenAccountB,
+            //     mintAuthority.publicKey,
+            //     [mintAuthority],
+            //     tokenCount
+            //   );
+          
+          
+            console.log('before calling initialize');
+
+            await program.rpc.initialize(
+                "B",
+                vault_account_bump,
+                new anchor.BN(tokenCount),
+                new anchor.BN(tokenCount),
+                {
+                    accounts: {
+                        initializer: initializerMainAccount.publicKey,
+                        vaultAccount: vault_account_pda,
+                        mint: mintA.publicKey,
+                        initializerDepositTokenAccount: initializerTokenAccountA,
+                        initializerReceiveTokenAccount: initializerTokenAccountB,
+                        escrowAccount: escrowAccount.publicKey,
+                        systemProgram: SystemProgram.programId,
+                        rent: SYSVAR_RENT_PUBKEY,
+                        tokenProgram: TOKEN_PROGRAM_ID,
+                    },
+                    instructions: [
+                        await program.account.escrowAccount.createInstruction(escrowAccount),
+                    ],
+                    signers: [escrowAccount, initializerMainAccount],
+                }
+            );
+            console.log('called initialize');
+
+            const escrow = await program.account.escrowAccount.fetch(escrowAccount.publicKey);
+            if (escrow) {
+                console.log(escrow);
+                setVoucher(escrow);
             }
         } catch (err) {
             console.log("Transaction Error: ", err);
@@ -87,7 +178,7 @@ function SendVoucher() {
                     voucher && <div>
                         <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
                         <div className='success-message large-text'>Success! Here’s your unique share link:</div>
-                        <div className='share-link-field share-link-text'>{window.location.href}accept-voucher?voucherAccount={voucherAccount.publicKey.toBase58()}</div>
+                        <div className='share-link-field share-link-text'>{window.location.href}accept-voucher?voucherAccount={escrowAccount.publicKey.toBase58()}</div>
                         <div className='friend-installs-message medium-text'>Once your friend installs Phantom...</div>
                     </div>
                 }

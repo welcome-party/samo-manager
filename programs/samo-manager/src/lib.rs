@@ -12,6 +12,7 @@ pub mod samo_manager {
 
     pub fn initialize(
         ctx: Context<Initialize>,
+        _vault_account_seed: String,
         _vault_account_bump: u8,
         initializer_amount: u64,
         taker_amount: u64,
@@ -99,14 +100,14 @@ pub mod samo_manager {
 }
 
 #[derive(Accounts)]
-#[instruction(vault_account_bump: u8, initializer_amount: u64)]
+#[instruction(vault_account_seed: String, vault_account_bump: u8, initializer_amount: u64)]
 pub struct Initialize<'info> {
     #[account(mut, signer)]
     pub initializer: AccountInfo<'info>,
     pub mint: Account<'info, Mint>,
     #[account(
     init,
-    seeds = [b"token-seed".as_ref()],
+    seeds = [vault_account_seed.as_bytes()],
     bump = vault_account_bump,
     payer = initializer,
     token::mint = mint,
