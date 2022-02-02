@@ -44,7 +44,7 @@ function ListVouchers() {
         const program = new Program(idl, programID, provider);
 
         try {
-            setVouchers(await program.account.voucher.all());
+            setVouchers(await program.account.escrowAccount.all());
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
@@ -60,7 +60,7 @@ function ListVouchers() {
     return (
         <div className='content'>
             <div className='list-area'>
-                {vouchers.map((voucher, key) => <div key={key} className='medium-text'>From:  {voucher.account.fromName} , To:  {voucher.account.toName},  $SAMO:  {voucher.account.tokenCount}, Valid For Days:  {voucher.account.validDays} </div>)}
+                {vouchers.map((voucher, key) => <div key={key} className='medium-text'>From:  {voucher.account.fromName} , To:  {voucher.account.toName},  $SAMO:  {voucher.account.initializerAmount.toString()}, Valid For Days:  {voucher.account.takerAmount.toString()} </div>)}
             </div>
         </div>
     );

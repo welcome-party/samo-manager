@@ -61,10 +61,11 @@ function SendVoucher() {
 
         const provider = await getProvider()
         const program = new Program(idl, programID, provider);
+        const seed = Date.now() + '';
 
         try {
             const [vault_account_pda, vault_account_bump] = await PublicKey.findProgramAddress(
-                [Buffer.from(anchor.utils.bytes.utf8.encode("B"))],
+                [Buffer.from(anchor.utils.bytes.utf8.encode(seed))],
                 program.programId
             );
 
@@ -133,7 +134,7 @@ function SendVoucher() {
             console.log('before calling initialize');
 
             await program.rpc.initialize(
-                "B",
+                seed,
                 vault_account_bump,
                 new anchor.BN(tokenCount),
                 new anchor.BN(tokenCount),
