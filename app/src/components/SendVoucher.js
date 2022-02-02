@@ -75,8 +75,6 @@ function SendVoucher() {
                 "processed"
             );
 
-            console.log('Tokens airdropped to payer');
-
             // Fund Main Accounts
             await provider.send(
                 (() => {
@@ -93,8 +91,6 @@ function SendVoucher() {
                 [payer]
             );
 
-            console.log('Main Account funded');
-
             const mintA = await Token.createMint(
                 provider.connection,
                 payer,
@@ -102,36 +98,33 @@ function SendVoucher() {
                 null,
                 0,
                 TOKEN_PROGRAM_ID
-              );
-          
-              const mintB = await Token.createMint(
+            );
+
+            const mintB = await Token.createMint(
                 provider.connection,
                 payer,
                 mintAuthority.publicKey,
                 null,
                 0,
                 TOKEN_PROGRAM_ID
-              );
-          
-              const initializerTokenAccountA = await mintA.createAccount(initializerMainAccount.publicKey);
-              const initializerTokenAccountB = await mintB.createAccount(initializerMainAccount.publicKey);
-          
-              await mintA.mintTo(
+            );
+
+            const initializerTokenAccountA = await mintA.createAccount(initializerMainAccount.publicKey);
+            const initializerTokenAccountB = await mintB.createAccount(initializerMainAccount.publicKey);
+
+            await mintA.mintTo(
                 initializerTokenAccountA,
                 mintAuthority.publicKey,
                 [mintAuthority],
                 tokenCount
-              );
-          
+            );
+
             //   await mintB.mintTo(
             //     takerTokenAccountB,
             //     mintAuthority.publicKey,
             //     [mintAuthority],
             //     tokenCount
             //   );
-          
-          
-            console.log('before calling initialize');
 
             await program.rpc.initialize(
                 seed,
@@ -156,11 +149,9 @@ function SendVoucher() {
                     signers: [escrowAccount, initializerMainAccount],
                 }
             );
-            console.log('called initialize');
 
             const escrow = await program.account.escrowAccount.fetch(escrowAccount.publicKey);
             if (escrow) {
-                console.log(escrow);
                 setVoucher(escrow);
             }
         } catch (err) {
