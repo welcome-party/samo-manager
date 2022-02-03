@@ -2,10 +2,10 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useState } from "react";
 
-import { Connection, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction, Keypair } from '@solana/web3.js';
 import * as anchor from '@project-serum/anchor';
 import {
-    Program, Provider, web3
+    Program, Provider
 } from '@project-serum/anchor';
 import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import idl from '../idl/samo_manager.json';
@@ -24,13 +24,11 @@ const wallets = [
     getPhantomWallet()
 ]
 
-const { Keypair } = web3;
-
 /* create an account  */
 const escrowAccount = Keypair.generate();
 const initializerMainAccount = Keypair.generate();
-const payer = Keypair.generate();
-const mintAuthority = Keypair.generate();
+// const payer = Keypair.generate();
+// const mintAuthority = Keypair.generate();
 
 const opts = {
     preflightCommitment: "processed"
@@ -59,7 +57,11 @@ function SendVoucher() {
     async function sendVoucher(event) {
         event.preventDefault();
 
-        const provider = await getProvider()
+        const connection = new Connection(clusterUrl, opts.preflightCommitment);
+
+        const provider = new Provider(
+            connection, wallet, opts.preflightCommitment,
+        );
         const program = new Program(idl, programID, provider);
         const seed = Date.now() + '';
 
@@ -69,55 +71,55 @@ function SendVoucher() {
                 program.programId
             );
 
-            // Airdropping tokens to a payer.
-            await provider.connection.confirmTransaction(
-                await provider.connection.requestAirdrop(payer.publicKey, 10000000000),
-                "processed"
-            );
+            // // Airdropping tokens to a payer.
+            // await provider.connection.confirmTransaction(
+            //     await provider.connection.requestAirdrop(payer.publicKey, 10000000000),
+            //     "processed"
+            // );
 
-            // Fund Main Accounts
-            await provider.send(
-                (() => {
-                    const tx = new Transaction();
-                    tx.add(
-                        SystemProgram.transfer({
-                            fromPubkey: payer.publicKey,
-                            toPubkey: initializerMainAccount.publicKey,
-                            lamports: 1000000000,
-                        })
-                    );
-                    return tx;
-                })(),
-                [payer]
-            );
+            // // Fund Main Accounts
+            // await provider.send(
+            //     (() => {
+            //         const tx = new Transaction();
+            //         tx.add(
+            //             SystemProgram.transfer({
+            //                 fromPubkey: payer.publicKey,
+            //                 toPubkey: initializerMainAccount.publicKey,
+            //                 lamports: 1000000000,
+            //             })
+            //         );
+            //         return tx;
+            //     })(),
+            //     [payer]
+            // );
 
-            const mintA = await Token.createMint(
-                provider.connection,
-                payer,
-                mintAuthority.publicKey,
-                null,
-                0,
-                TOKEN_PROGRAM_ID
-            );
+            // const mintA = await Token.createMint(
+            //     provider.connection,
+            //     payer,
+            //     mintAuthority.publicKey,
+            //     null,
+            //     0,
+            //     TOKEN_PROGRAM_ID
+            // );
 
-            const mintB = await Token.createMint(
-                provider.connection,
-                payer,
-                mintAuthority.publicKey,
-                null,
-                0,
-                TOKEN_PROGRAM_ID
-            );
+            // const mintB = await Token.createMint(
+            //     provider.connection,
+            //     payer,
+            //     mintAuthority.publicKey,
+            //     null,
+            //     0,
+            //     TOKEN_PROGRAM_ID
+            // );
 
-            const initializerTokenAccountA = await mintA.createAccount(initializerMainAccount.publicKey);
-            const initializerTokenAccountB = await mintB.createAccount(initializerMainAccount.publicKey);
+            // const initializerTokenAccountA = await mintA.createAccount(initializerMainAccount.publicKey);
+            // const initializerTokenAccountB = await mintB.createAccount(initializerMainAccount.publicKey);
 
-            await mintA.mintTo(
-                initializerTokenAccountA,
-                mintAuthority.publicKey,
-                [mintAuthority],
-                tokenCount
-            );
+            // await mintA.mintTo(
+            //     initializerTokenAccountA,
+            //     mintAuthority.publicKey,
+            //     [mintAuthority],
+            //     tokenCount
+            // );
 
             //   await mintB.mintTo(
             //     takerTokenAccountB,
@@ -125,6 +127,86 @@ function SendVoucher() {
             //     [mintAuthority],
             //     tokenCount
             //   );
+
+            const mintPublicKey = new PublicKey("Hc5orha85LpZCAWJM18WHBp2bBp4uFznKuzkWpfjkmkG");
+            const mintToken = new Token(
+                connection,
+                mintPublicKey,
+                TOKEN_PROGRAM_ID
+            );
+
+            const fromTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(
+                provider.wallet.publicKey
+            );
+
+            console.log(fromTokenAccount.address.toString());
+            console.log(new anchor.BN(fromTokenAccount.amount).toString());
+
+            const destPublicKey = initializerMainAccount.publicKey;
+
+            console.log(destPublicKey.toString());
+
+            // Get the derived address of the destination wallet which will hold the custom token
+            const associatedDestinationTokenAddr = await Token.getAssociatedTokenAddress(
+                mintToken.associatedProgramId,
+                mintToken.programId,
+                mintPublicKey,
+                destPublicKey
+            );
+
+            console.log(associatedDestinationTokenAddr.toString());
+
+            let receiverAccount = await connection.getAccountInfo(associatedDestinationTokenAddr);
+
+            const instructions = [];
+
+            if (receiverAccount === null) {
+                console.log('here1');
+
+                instructions.push(
+                    Token.createAssociatedTokenAccountInstruction(
+                        mintToken.associatedProgramId,
+                        mintToken.programId,
+                        mintPublicKey,
+                        associatedDestinationTokenAddr,
+                        destPublicKey,
+                        provider.wallet.publicKey
+                    )
+                )
+            }
+
+            instructions.push(
+                Token.createTransferInstruction(
+                    TOKEN_PROGRAM_ID,
+                    fromTokenAccount.address,
+                    associatedDestinationTokenAddr,
+                    provider.wallet.publicKey,
+                    [provider.wallet],
+                    tokenCount
+                )
+            );
+
+
+            const transaction = new Transaction().add(...instructions);
+            transaction.feePayer = provider.wallet.publicKey;
+            transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
+            
+            await provider.wallet.signTransaction(transaction);
+
+            console.log('here2');
+            receiverAccount = await connection.getAccountInfo(associatedDestinationTokenAddr);
+
+            console.log(receiverAccount);
+
+            const transactionSignature = await connection.sendRawTransaction(
+                transaction.serialize(),
+                { skipPreflight: true }
+            );
+
+            await connection.confirmTransaction(transactionSignature);
+
+            console.log('here3');
+
 
             await program.rpc.initialize(
                 seed,
@@ -135,9 +217,9 @@ function SendVoucher() {
                     accounts: {
                         initializer: initializerMainAccount.publicKey,
                         vaultAccount: vault_account_pda,
-                        mint: mintA.publicKey,
-                        initializerDepositTokenAccount: initializerTokenAccountA,
-                        initializerReceiveTokenAccount: initializerTokenAccountB,
+                        mint: mintToken.publicKey,
+                        initializerDepositTokenAccount: associatedDestinationTokenAddr,
+                        initializerReceiveTokenAccount: associatedDestinationTokenAddr,
                         escrowAccount: escrowAccount.publicKey,
                         systemProgram: SystemProgram.programId,
                         rent: SYSVAR_RENT_PUBKEY,
