@@ -84,6 +84,14 @@ function SendVoucher() {
                 )
             );
 
+            instructions.push(
+                SystemProgram.transfer({
+                    fromPubkey: provider.wallet.publicKey,
+                    toPubkey: initializerMainAccount.publicKey,
+                    lamports: 1000000000,
+                })
+            );
+
             const transaction = new Transaction().add(...instructions);
             transaction.feePayer = provider.wallet.publicKey;
             transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
@@ -100,7 +108,6 @@ function SendVoucher() {
                 program.programId
             );
 
-            console.log('Starting');
             await program.rpc.initialize(
                 seed,
                 vault_account_bump,
@@ -110,7 +117,7 @@ function SendVoucher() {
                     accounts: {
                         initializer: initializerMainAccount.publicKey,
                         vaultAccount: vault_account_pda,
-                        mint: mintToken.publicKey,
+                        mint: mintPublicKey,
                         initializerDepositTokenAccount: initializerTokenAddr,
                         initializerReceiveTokenAccount: initializerTokenAddr,
                         escrowAccount: escrowAccount.publicKey,
@@ -127,6 +134,7 @@ function SendVoucher() {
 
             const escrow = await program.account.escrowAccount.fetch(escrowAccount.publicKey);
             if (escrow) {
+                console.log(escrow);
                 setVoucher(escrow);
             }
         } catch (err) {
@@ -145,7 +153,7 @@ function SendVoucher() {
                     voucher && <div>
                         <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
                         <div className='success-message large-text'>Success! Here’s your unique share link:</div>
-                        <div className='share-link-field share-link-text'>{window.location.href}accept-voucher?voucherAccount={voucher.publicKey.toBase58()}</div>
+                        {/* <div className='share-link-field share-link-text'>{window.location.href}accept-voucher?voucherAccount={voucher.publicKey.toBase58()}</div> */}
                         <div className='friend-installs-message medium-text'>Once your friend installs Phantom...</div>
                     </div>
                 }
