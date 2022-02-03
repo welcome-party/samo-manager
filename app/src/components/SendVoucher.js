@@ -18,6 +18,7 @@ import './WalletAdaptor.css';
 import WelcomePartyInfo from './subcomponents/WelcomePartyInfo.js';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
+const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
 const wallets = [getPhantomWallet()];
 const opts = { preflightCommitment: "processed" };
 const programID = new PublicKey(idl.metadata.address);
@@ -37,14 +38,13 @@ function SendVoucher() {
 
         const escrowAccount = Keypair.generate();
         const initializerMainAccount = Keypair.generate();
-        
+
         const seed = Date.now() + '';
-        
+
         const connection = new Connection(clusterUrl, opts.preflightCommitment);
         const provider = new Provider(connection, wallet, opts.preflightCommitment);
         const program = new Program(idl, programID, provider);
 
-        const mintPublicKey = new PublicKey("Hc5orha85LpZCAWJM18WHBp2bBp4uFznKuzkWpfjkmkG");
         const mintToken = new Token(connection, mintPublicKey, TOKEN_PROGRAM_ID);
         const instructions = [];
 
