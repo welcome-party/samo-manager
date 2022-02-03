@@ -134,7 +134,6 @@ function SendVoucher() {
 
             const escrow = await program.account.escrowAccount.fetch(escrowAccount.publicKey);
             if (escrow) {
-                console.log(escrow);
                 setVoucher(escrow);
             }
         } catch (err) {
