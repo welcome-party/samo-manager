@@ -3,10 +3,10 @@
   "name": "samo_manager",
   "instructions": [
     {
-      "name": "initialize",
+      "name": "sendVoucher",
       "accounts": [
         {
-          "name": "initializer",
+          "name": "sender",
           "isMut": true,
           "isSigner": true
         },
@@ -21,17 +21,12 @@
           "isSigner": false
         },
         {
-          "name": "initializerDepositTokenAccount",
+          "name": "senderTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "initializerReceiveTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "escrowAccount",
+          "name": "voucherAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -61,20 +56,16 @@
           "type": "u8"
         },
         {
-          "name": "initializerAmount",
-          "type": "u64"
-        },
-        {
-          "name": "takerAmount",
+          "name": "tokenCount",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "cancel",
+      "name": "cancelVoucher",
       "accounts": [
         {
-          "name": "initializer",
+          "name": "sender",
           "isMut": true,
           "isSigner": true
         },
@@ -89,12 +80,12 @@
           "isSigner": false
         },
         {
-          "name": "initializerDepositTokenAccount",
+          "name": "senderTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "escrowAccount",
+          "name": "voucherAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -107,40 +98,30 @@
       "args": []
     },
     {
-      "name": "exchange",
+      "name": "acceptVoucher",
       "accounts": [
         {
-          "name": "taker",
+          "name": "receiver",
           "isMut": false,
           "isSigner": true
         },
         {
-          "name": "takerDepositTokenAccount",
+          "name": "receiverTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "takerReceiveTokenAccount",
+          "name": "senderTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "initializerDepositTokenAccount",
+          "name": "sender",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "initializerReceiveTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "initializer",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "escrowAccount",
+          "name": "voucherAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -165,28 +146,20 @@
   ],
   "accounts": [
     {
-      "name": "EscrowAccount",
+      "name": "VoucherAccount",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "initializerKey",
+            "name": "senderKey",
             "type": "publicKey"
           },
           {
-            "name": "initializerDepositTokenAccount",
+            "name": "senderTokenAccount",
             "type": "publicKey"
           },
           {
-            "name": "initializerReceiveTokenAccount",
-            "type": "publicKey"
-          },
-          {
-            "name": "initializerAmount",
-            "type": "u64"
-          },
-          {
-            "name": "takerAmount",
+            "name": "tokenCount",
             "type": "u64"
           }
         ]

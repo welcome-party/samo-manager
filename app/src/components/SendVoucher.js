@@ -27,19 +27,16 @@ function SendVoucher() {
     const wallet = useWallet();
     const history = useHistory();
 
-    const [fromName, setFromName] = useState("");
-    const [toName, setToName] = useState("");
     const [tokenCount, setTokenCount] = useState("");
     const [voucher, setVoucher] = useState("");
-    // const validDays = 5;
 
     async function sendVoucher(event) {
         event.preventDefault();
 
-        const escrowAccount = Keypair.generate();
-        const initializerMainAccount = Keypair.generate();
+        const voucherAccount = Keypair.generate();
+        const senderAccount = Keypair.generate();
 
-        const seed = Date.now() + '';
+        const vaultAccountSeed = Date.now() + '';
 
         const connection = new Connection(clusterUrl, opts.preflightCommitment);
         const provider = new Provider(connection, wallet, opts.preflightCommitment);
@@ -51,23 +48,23 @@ function SendVoucher() {
         try {
             const senderWalletTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
 
-            const initializerTokenAddr = await Token.getAssociatedTokenAddress(
+            const senderTokenAddr = await Token.getAssociatedTokenAddress(
                 mintToken.associatedProgramId,
                 mintToken.programId,
                 mintPublicKey,
-                initializerMainAccount.publicKey
+                senderAccount.publicKey
             );
 
-            const initializerTokenAccount = await connection.getAccountInfo(initializerTokenAddr);
+            const senderTokenAccount = await connection.getAccountInfo(senderTokenAddr);
 
-            if (initializerTokenAccount === null) {
+            if (senderTokenAccount === null) {
                 instructions.push(
                     Token.createAssociatedTokenAccountInstruction(
                         mintToken.associatedProgramId,
                         mintToken.programId,
                         mintPublicKey,
-                        initializerTokenAddr,
-                        initializerMainAccount.publicKey,
+                        senderTokenAddr,
+                        senderAccount.publicKey,
                         provider.wallet.publicKey
                     )
                 )
@@ -77,7 +74,7 @@ function SendVoucher() {
                 Token.createTransferInstruction(
                     TOKEN_PROGRAM_ID,
                     senderWalletTokenAccount.address,
-                    initializerTokenAddr,
+                    senderTokenAddr,
                     provider.wallet.publicKey,
                     [],
                     tokenCount
@@ -87,7 +84,7 @@ function SendVoucher() {
             instructions.push(
                 SystemProgram.transfer({
                     fromPubkey: provider.wallet.publicKey,
-                    toPubkey: initializerMainAccount.publicKey,
+                    toPubkey: senderAccount.publicKey,
                     lamports: 1000000000,
                 })
             );
@@ -103,38 +100,36 @@ function SendVoucher() {
 
             await connection.confirmTransaction(transactionSignature);
 
-            const [vault_account_pda, vault_account_bump] = await PublicKey.findProgramAddress(
-                [Buffer.from(anchor.utils.bytes.utf8.encode(seed))],
+            const [vault_account_pda, vaultAccountBump] = await PublicKey.findProgramAddress(
+                [Buffer.from(anchor.utils.bytes.utf8.encode(vaultAccountSeed))],
                 program.programId
             );
 
-            await program.rpc.initialize(
-                seed,
-                vault_account_bump,
-                new anchor.BN(tokenCount),
+            await program.rpc.sendVoucher(
+                vaultAccountSeed,
+                vaultAccountBump,
                 new anchor.BN(tokenCount),
                 {
                     accounts: {
-                        initializer: initializerMainAccount.publicKey,
+                        sender: senderAccount.publicKey,
                         vaultAccount: vault_account_pda,
                         mint: mintPublicKey,
-                        initializerDepositTokenAccount: initializerTokenAddr,
-                        initializerReceiveTokenAccount: initializerTokenAddr,
-                        escrowAccount: escrowAccount.publicKey,
+                        senderTokenAccount: senderTokenAddr,
+                        voucherAccount: voucherAccount.publicKey,
                         systemProgram: SystemProgram.programId,
                         rent: SYSVAR_RENT_PUBKEY,
                         tokenProgram: TOKEN_PROGRAM_ID,
                     },
                     instructions: [
-                        await program.account.escrowAccount.createInstruction(escrowAccount),
+                        await program.account.voucherAccount.createInstruction(voucherAccount),
                     ],
-                    signers: [escrowAccount, initializerMainAccount],
+                    signers: [voucherAccount, senderAccount],
                 }
             );
 
-            const escrow = await program.account.escrowAccount.fetch(escrowAccount.publicKey);
-            if (escrow) {
-                setVoucher(escrow);
+            const voucher = await program.account.voucherAccount.fetch(voucherAccount.publicKey);
+            if (voucher) {
+                setVoucher(voucher);
             }
         } catch (err) {
             console.log("Transaction Error: ", err);
@@ -158,10 +153,6 @@ function SendVoucher() {
                 }
                 {
                     !voucher && <form onSubmit={sendVoucher}>
-                        <div className='large-text your-name-text'> Your name</div>
-                        <label><input type="text" value={fromName} onChange={(e) => setFromName(e.target.value)} required className='input-field your-name-input large-text' /></label>
-                        <div className='large-text recipient-name-text'> Recipient's name</div>
-                        <label><input type="text" value={toName} onChange={(e) => setToName(e.target.value)} required className='input-field recipient-name-input large-text' /></label>
                         <div className='large-text samo-to-send-text'> $SAMO to send</div>
                         <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field samo-to-send-input large-text' /></label>
 
