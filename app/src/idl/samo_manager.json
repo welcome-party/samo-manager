@@ -3,7 +3,7 @@
   "name": "samo_manager",
   "instructions": [
     {
-      "name": "sendVoucher",
+      "name": "createVoucher",
       "accounts": [
         {
           "name": "sender",

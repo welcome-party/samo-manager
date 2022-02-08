@@ -10,8 +10,8 @@ pub mod samo_manager {
 
     const VOUCHER_PDA_SEED: &[u8] = b"voucher";
 
-    pub fn send_voucher(
-        ctx: Context<SendVoucher>,
+    pub fn create_voucher(
+        ctx: Context<CreateVoucher>,
         _vault_account_seed: String,
         _vault_account_bump: u8,
         token_count: u64,
@@ -82,7 +82,7 @@ pub mod samo_manager {
 
 #[derive(Accounts)]
 #[instruction(vault_account_seed: String, vault_account_bump: u8, token_count: u64)]
-pub struct SendVoucher<'info> {
+pub struct CreateVoucher<'info> {
     #[account(mut, signer)]
     pub sender: AccountInfo<'info>,
     pub mint: Account<'info, Mint>,
@@ -157,7 +157,7 @@ pub struct VoucherAccount {
     pub token_count: u64,
 }
 
-impl<'info> SendVoucher<'info> {
+impl<'info> CreateVoucher<'info> {
     fn into_transfer_to_pda_context(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
         let cpi_accounts = Transfer {
             from: self.sender_token_account.to_account_info().clone(),
