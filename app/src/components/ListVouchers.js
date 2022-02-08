@@ -2,8 +2,6 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useState, useEffect } from "react";
 
-import * as anchor from '@project-serum/anchor';
-
 import { Connection, PublicKey } from '@solana/web3.js';
 import {
     Program, Provider
