@@ -53,8 +53,8 @@ function ListVouchers() {
 
         try {
             const senderTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
-            const [vaultAccountPda, _vaultAccountBump] = await PublicKey.findProgramAddress([Buffer.from(vaultAccountSeed)], program.programId);
-            const [vaultAuthorityPda, _vaultAuthorityBump] = await PublicKey.findProgramAddress([Buffer.from(vaultAuthoritySeed)],program.programId);
+            const [vaultAccountPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAccountSeed)], program.programId);
+            const [vaultAuthorityPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAuthoritySeed)],program.programId);
           
             await program.rpc.cancelVoucher(
                 {
