@@ -34,8 +34,6 @@ function CreateVoucher() {
         event.preventDefault();
 
         const voucherAccount = Keypair.generate();
-        const senderAccount = Keypair.generate();
-
         const vaultAccountSeed = Date.now() + '';
 
         const connection = new Connection(clusterUrl, opts.preflightCommitment);
@@ -43,62 +41,9 @@ function CreateVoucher() {
         const program = new Program(idl, programID, provider);
 
         const mintToken = new Token(connection, mintPublicKey, TOKEN_PROGRAM_ID);
-        const instructions = [];
 
         try {
-            const senderWalletTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
-
-            const senderTokenAddr = await Token.getAssociatedTokenAddress(
-                mintToken.associatedProgramId,
-                mintToken.programId,
-                mintPublicKey,
-                senderAccount.publicKey
-            );
-
-            const senderTokenAccount = await connection.getAccountInfo(senderTokenAddr);
-
-            if (senderTokenAccount === null) {
-                instructions.push(
-                    Token.createAssociatedTokenAccountInstruction(
-                        mintToken.associatedProgramId,
-                        mintToken.programId,
-                        mintPublicKey,
-                        senderTokenAddr,
-                        senderAccount.publicKey,
-                        provider.wallet.publicKey
-                    )
-                )
-            }
-
-            instructions.push(
-                Token.createTransferInstruction(
-                    TOKEN_PROGRAM_ID,
-                    senderWalletTokenAccount.address,
-                    senderTokenAddr,
-                    provider.wallet.publicKey,
-                    [],
-                    tokenCount
-                )
-            );
-
-            instructions.push(
-                SystemProgram.transfer({
-                    fromPubkey: provider.wallet.publicKey,
-                    toPubkey: senderAccount.publicKey,
-                    lamports: 1000000000,
-                })
-            );
-
-            const transaction = new Transaction().add(...instructions);
-            transaction.feePayer = provider.wallet.publicKey;
-            transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-            await provider.wallet.signTransaction(transaction);
-
-            const transactionSignature = await connection.sendRawTransaction(transaction.serialize(),
-                { skipPreflight: true }
-            );
-
-            await connection.confirmTransaction(transactionSignature);
+            const senderTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
 
             const [vault_account_pda, vaultAccountBump] = await PublicKey.findProgramAddress(
                 [Buffer.from(anchor.utils.bytes.utf8.encode(vaultAccountSeed))],
@@ -111,10 +56,10 @@ function CreateVoucher() {
                 new anchor.BN(tokenCount),
                 {
                     accounts: {
-                        sender: senderAccount.publicKey,
-                        vaultAccount: vault_account_pda,
                         mint: mintPublicKey,
-                        senderTokenAccount: senderTokenAddr,
+                        sender: provider.wallet.publicKey,
+                        senderTokenAccount: senderTokenAccount.address,
+                        vaultAccount: vault_account_pda,
                         voucherAccount: voucherAccount.publicKey,
                         systemProgram: SystemProgram.programId,
                         rent: SYSVAR_RENT_PUBKEY,
@@ -123,7 +68,7 @@ function CreateVoucher() {
                     instructions: [
                         await program.account.voucherAccount.createInstruction(voucherAccount),
                     ],
-                    signers: [voucherAccount, senderAccount],
+                    signers: [voucherAccount],
                 }
             );
 
