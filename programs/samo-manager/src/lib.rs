@@ -139,7 +139,7 @@ pub struct AcceptVoucher<'info> {
     pub sender: AccountInfo<'info>,
     #[account(
     mut,
-    constraint = voucher_account.token_count <= receiver_token_account.amount,
+    constraint = voucher_account.token_count > 0,
     constraint = voucher_account.sender_token_account == * sender_token_account.to_account_info().key,
     constraint = voucher_account.sender_key == * sender.key,
     close = sender

@@ -34,11 +34,11 @@ function AcceptVoucher() {
     const [voucher, setVoucher] = useState("");
 
     async function fetchVoucher() {
-        const connection = new Connection(clusterUrl, opts.preflightCommitment);
-        const provider = new Provider(connection, wallet, opts.preflightCommitment);
-        const program = new Program(idl, programID, provider);
-
         try {
+            const connection = new Connection(clusterUrl, opts.preflightCommitment);
+            const provider = new Provider(connection, wallet, opts.preflightCommitment);
+            const program = new Program(idl, programID, provider);
+    
             setVoucher(await program.account.voucherAccount.fetch(voucherKey));
         } catch (err) {
             console.log("Transaction Error: ", err);
@@ -50,26 +50,28 @@ function AcceptVoucher() {
 
     async function acceptVoucher(event) {
         event.preventDefault();
-
-        const connection = new Connection(clusterUrl, opts.preflightCommitment);
-        const provider = new Provider(connection, wallet, opts.preflightCommitment);
-        const program = new Program(idl, programID, provider);
-
-        const voucherAccount = await program.account.voucherAccount.fetch(voucherKey);
-        const mintToken = new Token(connection, mintPublicKey, TOKEN_PROGRAM_ID);
-        const vaultAccountSeed = new Uint8Array(voucherAccount.vaultAccountSeed);
-        const vaultAuthoritySeed = anchor.utils.bytes.utf8.encode("voucher");
-
+        
         try {
-            const senderTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
+            const connection = new Connection(clusterUrl, opts.preflightCommitment);
+            const provider = new Provider(connection, wallet, opts.preflightCommitment);
+            const program = new Program(idl, programID, provider);
+    
+            const voucherAccount = await program.account.voucherAccount.fetch(voucherKey);
+            const mintToken = new Token(connection, mintPublicKey, TOKEN_PROGRAM_ID);
+            const vaultAccountSeed = new Uint8Array(voucherAccount.vaultAccountSeed);
+            const vaultAuthoritySeed = anchor.utils.bytes.utf8.encode("voucher");
+            
+            const receiverTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
             const [vaultAccountPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAccountSeed)], program.programId);
             const [vaultAuthorityPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAuthoritySeed)],program.programId);
           
             await program.rpc.acceptVoucher(
                 {
                     accounts: {
-                        sender: provider.wallet.publicKey,
-                        senderTokenAccount: senderTokenAccount.address,
+                        receiver: provider.wallet.publicKey,
+                        receiverTokenAccount: receiverTokenAccount.address,
+                        sender: voucherAccount.senderKey,
+                        senderTokenAccount: voucherAccount.senderTokenAccount,
                         vaultAccount: vaultAccountPda,
                         vaultAuthority: vaultAuthorityPda,
                         voucherAccount: new PublicKey(voucherKey),
