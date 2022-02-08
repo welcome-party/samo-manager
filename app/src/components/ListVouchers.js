@@ -68,6 +68,8 @@ function ListVouchers() {
                     }
                 }
             );
+
+            listVouchers();
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
