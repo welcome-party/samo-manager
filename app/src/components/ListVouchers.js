@@ -37,6 +37,7 @@ function ListVouchers() {
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
+            setVouchers(null);
             history.push('/');
         }
     }
@@ -73,6 +74,7 @@ function ListVouchers() {
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
+            setVouchers(null);
             history.push('/');
         }
     }

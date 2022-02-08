@@ -29,6 +29,7 @@ function CreateVoucher() {
 
     const [tokenCount, setTokenCount] = useState("");
     const [voucher, setVoucher] = useState("");
+    const [voucherKey, setVoucherKey] = useState("");
 
     async function createVoucher(event) {
         event.preventDefault();
@@ -70,11 +71,14 @@ function CreateVoucher() {
 
             const voucher = await program.account.voucherAccount.fetch(voucherAccount.publicKey);
             if (voucher) {
+                setVoucherKey(voucherAccount.publicKey.toString());
                 setVoucher(voucher);
             }
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
+            setVoucher(null);
+            setVoucherKey(null);
             history.push('/');
         }
     }
@@ -88,7 +92,7 @@ function CreateVoucher() {
                     voucher && <div>
                         <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
                         <div className='success-message large-text'>Success! Here’s your unique share link:</div>
-                        {/* <div className='share-link-field share-link-text'>{window.location.href}accept-voucher?voucherAccount={voucher.publicKey.toBase58()}</div> */}
+                        <div className='share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
                         <div className='friend-installs-message medium-text'>Once your friend installs Phantom...</div>
                     </div>
                 }
@@ -99,7 +103,6 @@ function CreateVoucher() {
 
                         <input type="submit" disabled={!wallet.connected} className='send-samo-button large-text' value='Send SAMO!' />
                     </form>
-
                 }
             </div>
         </div>
