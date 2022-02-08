@@ -10,19 +10,12 @@ import idl from '../idl/samo_manager.json';
 
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import './ListVouchers.css';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
-
-const wallets = [
-    /* view list of available wallets at https://github.com/solana-labs/wallet-adapter#wallets */
-    getPhantomWallet()
-]
-
-const opts = {
-    preflightCommitment: "processed"
-}
+const wallets = [getPhantomWallet()];
+const opts = { preflightCommitment: "processed" };
 const programID = new PublicKey(idl.metadata.address);
 
 function ListVouchers() {
@@ -30,28 +23,22 @@ function ListVouchers() {
     const history = useHistory();
     const [vouchers, setVouchers] = useState([]);
 
-    async function getProvider() {
-        const connection = new Connection(clusterUrl, opts.preflightCommitment);
-
-        const provider = new Provider(
-            connection, wallet, opts.preflightCommitment,
-        );
-        return provider;
-    }
-
     async function listVouchers() {
-        const provider = await getProvider()
+        const connection = new Connection(clusterUrl, opts.preflightCommitment);
+        const provider = new Provider(connection, wallet, opts.preflightCommitment);
         const program = new Program(idl, programID, provider);
 
         try {
-            const vouchers = await program.account.voucherAccount.all();
-            console.log(vouchers);
             setVouchers(await program.account.voucherAccount.all());
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
             history.push('/');
         }
+    }
+
+    async function cancelVoucher(voucherKey) {
+        alert(voucherKey);
     }
 
     useEffect(() => {
@@ -61,8 +48,16 @@ function ListVouchers() {
 
     return (
         <div className='content'>
+            <div><WalletMultiButton /></div>
             <div className='list-area'>
-                {vouchers.map((voucher, key) => <div key={key} className='medium-text'>Voucher Key: {voucher.publicKey.toString()} &nbsp; Sender: {voucher.account.senderKey.toString()} &nbsp;$SAMO: {voucher.account.tokenCount.toString()} </div>)}
+                {vouchers.map((voucher, key) => <div key={key} className='list-item medium-text'>
+                    Voucher: {voucher.publicKey.toString()} &nbsp;
+                    $SAMO: {voucher.account.tokenCount.toString()} &nbsp;
+                    {
+                        wallet.connected && (wallet.publicKey.toString() === voucher.account.senderKey.toString()) &&
+                        <input type="button" disabled={!wallet.connected} className='cancel-voucher-button medium-text' value='Cancel' onClick={() => cancelVoucher(voucher.publicKey.toString())}/>
+                    }
+                </div>)}
             </div>
         </div>
     );

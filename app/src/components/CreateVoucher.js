@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useState } from "react";
 
-import { Connection, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction, Keypair } from '@solana/web3.js';
+import { Connection, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY, Keypair } from '@solana/web3.js';
 import * as anchor from '@project-serum/anchor';
 import {
     Program, Provider

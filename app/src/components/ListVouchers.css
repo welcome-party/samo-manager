@@ -4,3 +4,23 @@
     top: 60px; 
     width: 1200px;
 }
+
+.list-item {
+  padding: 5px;
+}
+.cancel-voucher-button:enabled {
+    background: #FF60FD;
+    border: 1px solid #FF60FD;
+    box-sizing: border-box;
+    border-radius: 32px;  
+  }
+  
+.cancel-voucher-button:disabled {
+    background: rgba(115, 77, 114, 0.3);
+    border: 1px solid rgba(255, 96, 253, 0.3);
+    box-sizing: border-box;
+    border-radius: 32px;
+  
+    color: rgba(255, 255, 255, 0.3);
+  }
+  
