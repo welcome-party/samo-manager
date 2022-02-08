@@ -45,7 +45,7 @@ function CreateVoucher() {
         try {
             const senderTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
 
-            const [vault_account_pda, vaultAccountBump] = await PublicKey.findProgramAddress(
+            const [vaultAccountPda, vaultAccountBump] = await PublicKey.findProgramAddress(
                 [Buffer.from(anchor.utils.bytes.utf8.encode(vaultAccountSeed))],
                 program.programId
             );
@@ -59,7 +59,7 @@ function CreateVoucher() {
                         mint: mintPublicKey,
                         sender: provider.wallet.publicKey,
                         senderTokenAccount: senderTokenAccount.address,
-                        vaultAccount: vault_account_pda,
+                        vaultAccount: vaultAccountPda,
                         voucherAccount: voucherAccount.publicKey,
                         systemProgram: SystemProgram.programId,
                         rent: SYSVAR_RENT_PUBKEY,
