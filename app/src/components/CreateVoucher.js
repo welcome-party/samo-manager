@@ -34,7 +34,7 @@ function CreateVoucher() {
         event.preventDefault();
 
         const voucherAccount = Keypair.generate();
-        const vaultAccountSeed = Date.now() + '';
+        const vaultAccountSeed = anchor.utils.bytes.utf8.encode(Date.now() + '');
 
         const connection = new Connection(clusterUrl, opts.preflightCommitment);
         const provider = new Provider(connection, wallet, opts.preflightCommitment);
@@ -44,11 +44,7 @@ function CreateVoucher() {
 
         try {
             const senderTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
-
-            const [vaultAccountPda, vaultAccountBump] = await PublicKey.findProgramAddress(
-                [Buffer.from(anchor.utils.bytes.utf8.encode(vaultAccountSeed))],
-                program.programId
-            );
+            const [vaultAccountPda, vaultAccountBump] = await PublicKey.findProgramAddress([Buffer.from(vaultAccountSeed)], program.programId);
 
             await program.rpc.createVoucher(
                 vaultAccountSeed,

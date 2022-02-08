@@ -12,7 +12,7 @@ pub mod samo_manager {
 
     pub fn create_voucher(
         ctx: Context<CreateVoucher>,
-        _vault_account_seed: String,
+        _vault_account_seed: [u8; 13],
         _vault_account_bump: u8,
         token_count: u64,
     ) -> ProgramResult {
@@ -20,6 +20,7 @@ pub mod samo_manager {
         ctx.accounts.voucher_account.sender_token_account =
             *ctx.accounts.sender_token_account.to_account_info().key;
         ctx.accounts.voucher_account.token_count = token_count;
+        ctx.accounts.voucher_account.vault_account_seed = _vault_account_seed;
 
         let (vault_authority, _vault_authority_bump) =
             Pubkey::find_program_address(&[VOUCHER_PDA_SEED], ctx.program_id);
@@ -81,14 +82,14 @@ pub mod samo_manager {
 }
 
 #[derive(Accounts)]
-#[instruction(vault_account_seed: String, vault_account_bump: u8, token_count: u64)]
+#[instruction(vault_account_seed: [u8; 13], vault_account_bump: u8, token_count: u64)]
 pub struct CreateVoucher<'info> {
     #[account(mut, signer)]
     pub sender: AccountInfo<'info>,
     pub mint: Account<'info, Mint>,
     #[account(
     init,
-    seeds = [vault_account_seed.as_bytes()],
+    seeds = [&vault_account_seed],
     bump = vault_account_bump,
     payer = sender,
     token::mint = mint,
@@ -155,6 +156,7 @@ pub struct VoucherAccount {
     pub sender_key: Pubkey,
     pub sender_token_account: Pubkey,
     pub token_count: u64,
+    pub vault_account_seed: [u8; 13],
 }
 
 impl<'info> CreateVoucher<'info> {

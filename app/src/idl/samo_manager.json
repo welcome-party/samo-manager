@@ -49,7 +49,12 @@
       "args": [
         {
           "name": "vaultAccountSeed",
-          "type": "string"
+          "type": {
+            "array": [
+              "u8",
+              13
+            ]
+          }
         },
         {
           "name": "vaultAccountBump",
@@ -161,6 +166,15 @@
           {
             "name": "tokenCount",
             "type": "u64"
+          },
+          {
+            "name": "vaultAccountSeed",
+            "type": {
+              "array": [
+                "u8",
+                13
+              ]
+            }
           }
         ]
       }

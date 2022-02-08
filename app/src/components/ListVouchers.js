@@ -29,7 +29,6 @@ function ListVouchers() {
         const program = new Program(idl, programID, provider);
 
         try {
-            console.log(await program.account.voucherAccount.all());
             setVouchers(await program.account.voucherAccount.all());
         } catch (err) {
             console.log("Transaction Error: ", err);
