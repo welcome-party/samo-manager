@@ -115,6 +115,7 @@ function AcceptVoucher() {
                     }
                 }
             );
+            history.push('/');
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
