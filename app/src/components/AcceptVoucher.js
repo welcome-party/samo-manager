@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useState, useEffect } from "react";
 
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import {
     Program, Provider
 } from '@project-serum/anchor';
@@ -38,7 +38,7 @@ function AcceptVoucher() {
             const connection = new Connection(clusterUrl, opts.preflightCommitment);
             const provider = new Provider(connection, wallet, opts.preflightCommitment);
             const program = new Program(idl, programID, provider);
-    
+
             setVoucher(await program.account.voucherAccount.fetch(voucherKey));
         } catch (err) {
             console.log("Transaction Error: ", err);
@@ -50,26 +50,62 @@ function AcceptVoucher() {
 
     async function acceptVoucher(event) {
         event.preventDefault();
-        
+
         try {
             const connection = new Connection(clusterUrl, opts.preflightCommitment);
             const provider = new Provider(connection, wallet, opts.preflightCommitment);
             const program = new Program(idl, programID, provider);
-    
+
             const voucherAccount = await program.account.voucherAccount.fetch(voucherKey);
             const mintToken = new Token(connection, mintPublicKey, TOKEN_PROGRAM_ID);
             const vaultAccountSeed = new Uint8Array(voucherAccount.vaultAccountSeed);
             const vaultAuthoritySeed = anchor.utils.bytes.utf8.encode("voucher");
-            
-            const receiverTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
+
+            // const receiverTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
+
+            const receiverTokenAccountAddr = await Token.getAssociatedTokenAddress(
+                mintToken.associatedProgramId,
+                mintToken.programId,
+                mintPublicKey,
+                provider.wallet.publicKey
+            );
+
+            const receiverTokenAccount = await connection.getAccountInfo(receiverTokenAccountAddr);
+
+            const instructions = [];
+
+            if (receiverTokenAccount === null) {
+                instructions.push(
+                    Token.createAssociatedTokenAccountInstruction(
+                        mintToken.associatedProgramId,
+                        mintToken.programId,
+                        mintPublicKey,
+                        receiverTokenAccountAddr,
+                        provider.wallet.publicKey,
+                        provider.wallet.publicKey
+                    )
+                )
+
+                const transaction = new Transaction().add(...instructions);
+                transaction.feePayer = provider.wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
+                await provider.wallet.signTransaction(transaction);
+    
+                const transactionSignature = await connection.sendRawTransaction(transaction.serialize(),
+                    { skipPreflight: true }
+                );
+                await connection.confirmTransaction(transactionSignature);    
+            }
+
+
             const [vaultAccountPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAccountSeed)], program.programId);
-            const [vaultAuthorityPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAuthoritySeed)],program.programId);
-          
+            const [vaultAuthorityPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAuthoritySeed)], program.programId);
+
             await program.rpc.acceptVoucher(
                 {
                     accounts: {
                         receiver: provider.wallet.publicKey,
-                        receiverTokenAccount: receiverTokenAccount.address,
+                        receiverTokenAccount: receiverTokenAccountAddr,
                         sender: voucherAccount.senderKey,
                         senderTokenAccount: voucherAccount.senderTokenAccount,
                         vaultAccount: vaultAccountPda,
