@@ -130,12 +130,14 @@ function AcceptVoucher() {
 
     return (
         <div className='row'>
-            <WelcomePartyInfo />
+            <div className='col-md-6'>
+                <WelcomePartyInfo />
+            </div>
             {
-                !voucher && <div className='input-area large-text'><div className='invalid-message'>Invalid Voucher</div></div>
+                !voucher && <div className='col-md-6 input-area large-text'><div className='invalid-message'>Invalid Voucher</div></div>
             }
             {
-                voucher && <div className='input-area large-text'>
+                voucher && <div className='col-md-6 input-area large-text'>
                     <div className='invite-message'>{voucher.senderKey.toString()} has invited you to join them and get free {voucher.tokenCount.toString()} $SAMO</div>
                     <div className='step1-message-left'>STEP 1</div>
                     <div className='step1-message-right'>Install the Phantom Wallet on your Browser</div>

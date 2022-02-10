@@ -86,8 +86,10 @@ function ListVouchers() {
 
     return (
         <div className='row'>
-            <div><WalletMultiButton /></div>
-            <div className='list-area'>
+            <div className='col-md-6'>
+                <WalletMultiButton />
+            </div>
+            <div className='col-md-6 list-area'>
                 {vouchers.map((voucher, key) => <div key={key} className='list-item medium-text'>
                     Voucher: {voucher.publicKey.toString()} &nbsp;
                     $SAMO: {voucher.account.tokenCount.toString()} &nbsp;
