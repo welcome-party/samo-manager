@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::system_program;
+use anchor_spl::token::{self, CloseAccount, Mint, SetAuthority, TokenAccount, Transfer};
+use spl_token::instruction::AuthorityType;
 
 declare_id!("FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G");
 
@@ -7,86 +8,212 @@ declare_id!("FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G");
 pub mod samo_manager {
     use super::*;
 
-    pub fn send_voucher(ctx: Context<SendVoucher>, from_name: String, to_name: String, token_count: i16, valid_days: i16) -> ProgramResult {
-        let voucher: &mut Account<Voucher> = &mut ctx.accounts.voucher;
-        let sender: &Signer = &ctx.accounts.sender;
-        let clock: Clock = Clock::get().unwrap();
+    const VOUCHER_PDA_SEED: &[u8] = b"voucher";
 
-        if from_name.chars().count() > 200 {
-            return Err(ErrorCode::NameTooLong.into());
-        }
+    pub fn create_voucher(
+        ctx: Context<CreateVoucher>,
+        _vault_account_seed: [u8; 13],
+        _vault_account_bump: u8,
+        token_count: u64,
+    ) -> ProgramResult {
+        ctx.accounts.voucher_account.sender_key = *ctx.accounts.sender.key;
+        ctx.accounts.voucher_account.sender_token_account =
+            *ctx.accounts.sender_token_account.to_account_info().key;
+        ctx.accounts.voucher_account.token_count = token_count;
+        ctx.accounts.voucher_account.vault_account_seed = _vault_account_seed;
 
-        if to_name.chars().count() > 200 {
-            return Err(ErrorCode::NameTooLong.into());
-        }
+        let (vault_authority, _vault_authority_bump) =
+            Pubkey::find_program_address(&[VOUCHER_PDA_SEED], ctx.program_id);
+        token::set_authority(
+            ctx.accounts.into_set_authority_context(),
+            AuthorityType::AccountOwner,
+            Some(vault_authority),
+        )?;
 
-        if token_count <= 0 {
-            return Err(ErrorCode::InvalidTokenCount.into());
-        }
+        token::transfer(
+            ctx.accounts.into_transfer_to_pda_context(),
+            ctx.accounts.voucher_account.token_count,
+        )?;
 
-        if valid_days <= 0 {
-            return Err(ErrorCode::InvalidValidForDays.into());
-        }
+        Ok(())
+    }
 
-        voucher.sender = *sender.key;
-        voucher.timestamp = clock.unix_timestamp;
-        voucher.from_name = from_name;
-        voucher.to_name = to_name;
-        voucher.token_count = token_count;
-        voucher.valid_days = valid_days;
+    pub fn cancel_voucher(ctx: Context<CancelVoucher>) -> ProgramResult {
+        let (_vault_authority, vault_authority_bump) =
+            Pubkey::find_program_address(&[VOUCHER_PDA_SEED], ctx.program_id);
+        let authority_seeds = &[&VOUCHER_PDA_SEED[..], &[vault_authority_bump]];
+
+        token::transfer(
+            ctx.accounts
+                .into_transfer_to_sender_context()
+                .with_signer(&[&authority_seeds[..]]),
+            ctx.accounts.voucher_account.token_count,
+        )?;
+
+        token::close_account(
+            ctx.accounts
+                .into_close_context()
+                .with_signer(&[&authority_seeds[..]]),
+        )?;
+
+        Ok(())
+    }
+
+    pub fn accept_voucher(ctx: Context<AcceptVoucher>) -> ProgramResult {
+        let (_vault_authority, vault_authority_bump) =
+            Pubkey::find_program_address(&[VOUCHER_PDA_SEED], ctx.program_id);
+        let authority_seeds = &[&VOUCHER_PDA_SEED[..], &[vault_authority_bump]];
+
+        token::transfer(
+            ctx.accounts
+                .into_transfer_to_receiver_context()
+                .with_signer(&[&authority_seeds[..]]),
+            ctx.accounts.voucher_account.token_count,
+        )?;
+
+        token::close_account(
+            ctx.accounts
+                .into_close_context()
+                .with_signer(&[&authority_seeds[..]]),
+        )?;
 
         Ok(())
     }
 }
 
 #[derive(Accounts)]
-pub struct SendVoucher<'info> {
-    #[account(init, payer = sender, space = Voucher::LEN)]
-    pub voucher: Account<'info, Voucher>,
-    #[account(mut)]
-    pub sender: Signer<'info>,
-    #[account(address = system_program::ID)]
+#[instruction(vault_account_seed: [u8; 13], vault_account_bump: u8, token_count: u64)]
+pub struct CreateVoucher<'info> {
+    #[account(mut, signer)]
+    pub sender: AccountInfo<'info>,
+    pub mint: Account<'info, Mint>,
+    #[account(
+    init,
+    seeds = [&vault_account_seed],
+    bump = vault_account_bump,
+    payer = sender,
+    token::mint = mint,
+    token::authority = sender,
+    )]
+    pub vault_account: Account<'info, TokenAccount>,
+    #[account(
+    mut,
+    constraint = sender_token_account.amount >= token_count
+    )]
+    pub sender_token_account: Account<'info, TokenAccount>,
+    #[account(zero)]
+    pub voucher_account: Box<Account<'info, VoucherAccount>>,
     pub system_program: AccountInfo<'info>,
+    pub rent: Sysvar<'info, Rent>,
+    pub token_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct CancelVoucher<'info> {
+    #[account(mut, signer)]
+    pub sender: AccountInfo<'info>,
+    #[account(mut)]
+    pub vault_account: Account<'info, TokenAccount>,
+    pub vault_authority: AccountInfo<'info>,
+    #[account(mut)]
+    pub sender_token_account: Account<'info, TokenAccount>,
+    #[account(
+    mut,
+    constraint = voucher_account.sender_key == * sender.key,
+    constraint = voucher_account.sender_token_account == * sender_token_account.to_account_info().key,
+    close = sender
+    )]
+    pub voucher_account: Box<Account<'info, VoucherAccount>>,
+    pub token_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct AcceptVoucher<'info> {
+    #[account(signer)]
+    pub receiver: AccountInfo<'info>,
+    #[account(mut)]
+    pub receiver_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub sender_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub sender: AccountInfo<'info>,
+    #[account(
+    mut,
+    constraint = voucher_account.token_count > 0,
+    constraint = voucher_account.sender_token_account == * sender_token_account.to_account_info().key,
+    constraint = voucher_account.sender_key == * sender.key,
+    close = sender
+    )]
+    pub voucher_account: Box<Account<'info, VoucherAccount>>,
+    #[account(mut)]
+    pub vault_account: Account<'info, TokenAccount>,
+    pub vault_authority: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
 }
 
 #[account]
-pub struct Voucher {
-    pub sender: Pubkey,
-    pub timestamp: i64,
-    pub from_name: String,
-    pub to_name: String,
-    pub token_count: i16,
-    pub valid_days: i16,
+pub struct VoucherAccount {
+    pub sender_key: Pubkey,
+    pub sender_token_account: Pubkey,
+    pub token_count: u64,
+    pub vault_account_seed: [u8; 13],
 }
 
-const DISCRIMINATOR_LENGTH: usize = 8;
-const PUBLIC_KEY_LENGTH: usize = 32;
-const TIMESTAMP_LENGTH: usize = 8;
-const STRING_LENGTH_PREFIX: usize = 4;
-// Stores the size of the string.
-const MAX_FROM_NAME_LENGTH: usize = 200 * 4;
-// 200 chars max.
-const MAX_TO_NAME_LENGTH: usize = 200 * 4;
-// 200 chars max.
-const TOKEN_COUNT_LENGTH: usize = 2;
-const VALID_DAYS_LENGTH: usize = 2;
+impl<'info> CreateVoucher<'info> {
+    fn into_transfer_to_pda_context(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
+        let cpi_accounts = Transfer {
+            from: self.sender_token_account.to_account_info().clone(),
+            to: self.vault_account.to_account_info().clone(),
+            authority: self.sender.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
 
-impl Voucher {
-    const LEN: usize = DISCRIMINATOR_LENGTH
-        + PUBLIC_KEY_LENGTH // Sender.
-        + TIMESTAMP_LENGTH // Timestamp.
-        + STRING_LENGTH_PREFIX + MAX_FROM_NAME_LENGTH // From Email.
-        + STRING_LENGTH_PREFIX + MAX_TO_NAME_LENGTH // To Email.
-        + TOKEN_COUNT_LENGTH // Token Count.
-        + VALID_DAYS_LENGTH; // Valid days.
+    fn into_set_authority_context(&self) -> CpiContext<'_, '_, '_, 'info, SetAuthority<'info>> {
+        let cpi_accounts = SetAuthority {
+            account_or_mint: self.vault_account.to_account_info().clone(),
+            current_authority: self.sender.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
 }
 
-#[error]
-pub enum ErrorCode {
-    #[msg("The provided name should be 200 characters long maximum.")]
-    NameTooLong,
-    #[msg("The provided tokens should be more than 0")]
-    InvalidTokenCount,
-    #[msg("The provided validity period for voucher should be more than 0 days")]
-    InvalidValidForDays,
+impl<'info> CancelVoucher<'info> {
+    fn into_transfer_to_sender_context(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
+        let cpi_accounts = Transfer {
+            from: self.vault_account.to_account_info().clone(),
+            to: self.sender_token_account.to_account_info().clone(),
+            authority: self.vault_authority.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
+
+    fn into_close_context(&self) -> CpiContext<'_, '_, '_, 'info, CloseAccount<'info>> {
+        let cpi_accounts = CloseAccount {
+            account: self.vault_account.to_account_info().clone(),
+            destination: self.sender.clone(),
+            authority: self.vault_authority.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
+}
+
+impl<'info> AcceptVoucher<'info> {
+    fn into_transfer_to_receiver_context(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
+        let cpi_accounts = Transfer {
+            from: self.vault_account.to_account_info().clone(),
+            to: self.receiver_token_account.to_account_info().clone(),
+            authority: self.vault_authority.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
+
+    fn into_close_context(&self) -> CpiContext<'_, '_, '_, 'info, CloseAccount<'info>> {
+        let cpi_accounts = CloseAccount {
+            account: self.vault_account.to_account_info().clone(),
+            destination: self.sender.clone(),
+            authority: self.vault_authority.clone(),
+        };
+        CpiContext::new(self.token_program.clone(), cpi_accounts)
+    }
 }

@@ -17,6 +17,10 @@ wallet = "/Users/sachin/.config/solana/id.json"
 #[provider]
 #cluster = "devnet"
 #wallet = "/Users/sachin/.config/solana/id.json"
+
+#[provider]
+#cluster = "testnet"
+#wallet = "/Users/sachin/.config/solana/id.json"
 #
 #[provider]
 #cluster = "mainnet"
