@@ -4,15 +4,21 @@ const Footer = () => {
   return (
     <div className='row footer'>
       <div className='col-md-2'>
-        <a target="_blank" href="www.google.com" className='link-text'>SOCIAL</a>
+        <a href="https://google.com/" target="_blank" rel="noreferrer noopener" className='link-text'>
+          SOCIAL
+        </a>
       </div>
       <div className='col-md-6'>
       </div>
       <div className='col-md-2'>
-        <a target="_blank" href="www.google.com" className='link-text'>COMPANY</a>
+        <a href="https://google.com/" target="_blank" rel="noreferrer noopener" className='link-text'>
+          COMPANY
+        </a>
       </div>
       <div className='col-md-2'>
-        <a target="_blank" href="www.google.com" className='link-text'>SUPPORT</a>
+        <a href="https://google.com/" target="_blank" rel="noreferrer noopener" className='link-text'>
+          SUPPORT
+        </a>
       </div>
     </div>
   );
