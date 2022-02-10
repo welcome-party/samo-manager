@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, CloseAccount, Mint, SetAuthority, TokenAccount, Transfer};
 use spl_token::instruction::AuthorityType;
 
-declare_id!("FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G");
+declare_id!("7W6cQN1gyokmJFDss6zez3CpjAyv5KqRYjPa7bUDEtqK");
 
 #[program]
 pub mod samo_manager {

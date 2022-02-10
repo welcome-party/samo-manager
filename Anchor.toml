@@ -1,22 +1,22 @@
 [programs.localnet]
-samo_manager = "FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G"
+samo_manager = "7W6cQN1gyokmJFDss6zez3CpjAyv5KqRYjPa7bUDEtqK"
 
 [programs.devnet]
-samo_manager = "FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G"
+samo_manager = "7W6cQN1gyokmJFDss6zez3CpjAyv5KqRYjPa7bUDEtqK"
 
 [programs.mainnet]
-samo_manager = "FBRbWS9VGhfBZYaNP1vxKMq1wdn62RPC3XzcCHkF4D7G"
+samo_manager = "7W6cQN1gyokmJFDss6zez3CpjAyv5KqRYjPa7bUDEtqK"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
-[provider]
-cluster = "localnet"
-wallet = "/Users/sachin/.config/solana/id.json"
-
 #[provider]
-#cluster = "devnet"
+#cluster = "localnet"
 #wallet = "/Users/sachin/.config/solana/id.json"
+
+[provider]
+cluster = "devnet"
+wallet = "/Users/sachin/.config/solana/id.json"
 
 #[provider]
 #cluster = "testnet"
