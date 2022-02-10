@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <div className='row header'>
       <div className='col-md-3'>
-        <Link to='create-voucher'><img src={headerLogo} className="img-responsive" alt="Welcome Party"></img></Link>
+        <Link to='create-voucher'><img src={headerLogo} className="img-fluid" alt="Welcome Party"></img></Link>
       </div>
       <div className='col-md-5'>
       </div>

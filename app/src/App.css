@@ -1,14 +1,23 @@
-.header, .footer {
+.header {
   height: 75px;
   background: #1D233E;
   align-content: center;
   text-align: center;
-  position: fixed;
-  width: 100%;
+}
+
+.content {
+  align-content: center;
+  text-align: center;
 }
 
 .footer {
+  position: fixed;
   bottom: 0;
+  height: 75px;
+  width: 100%;
+  background: #1D233E;
+  align-content: center;
+  text-align: center;
 }
 
 .small-text {

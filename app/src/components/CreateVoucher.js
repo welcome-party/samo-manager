@@ -15,7 +15,7 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 
 import './CreateVoucher.css';
 import './WalletAdaptor.css';
-import WelcomePartyInfo from './subcomponents/WelcomePartyInfo.js';
+import WelcomePartyInfo from './WelcomePartyInfo.js';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -84,11 +84,12 @@ function CreateVoucher() {
     }
 
     return (
-        <div className='row'>
+        <div className='content row'>
             <div className='col-md-6'>
                 <WelcomePartyInfo />
             </div>
-            <div className='col-md-6 input-area'>
+            <div className='col-md-6'></div>
+            {/* <div className='col-md-6 input-area'>
                 <div className='sender-wallet-connect-button'><WalletMultiButton /></div>
                 {
                     voucher && <div>
@@ -106,7 +107,7 @@ function CreateVoucher() {
                         <input type="submit" disabled={!wallet.connected} className='send-samo-button large-text' value='Send SAMO!' />
                     </form>
                 }
-            </div>
+            </div> */}
         </div>
     );
 }

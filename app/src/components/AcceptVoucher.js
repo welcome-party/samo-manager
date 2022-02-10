@@ -16,7 +16,7 @@ import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-ad
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import './AcceptVoucher.css';
 import './WalletAdaptor.css';
-import WelcomePartyInfo from './subcomponents/WelcomePartyInfo.js';
+import WelcomePartyInfo from './WelcomePartyInfo.js';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -129,7 +129,7 @@ function AcceptVoucher() {
     }, []);
 
     return (
-        <div className='row'>
+        <div className='content row'>
             <div className='col-md-6'>
                 <WelcomePartyInfo />
             </div>

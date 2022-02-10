@@ -85,7 +85,7 @@ function ListVouchers() {
 
 
     return (
-        <div className='row'>
+        <div className='content row'>
             <div className='col-md-6'>
                 <WalletMultiButton />
             </div>
