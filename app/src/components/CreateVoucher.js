@@ -16,6 +16,7 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 import './CreateVoucher.css';
 import './WalletAdaptor.css';
 import WelcomePartyInfo from './WelcomePartyInfo.js';
+import successLogo from '../assets/success_logo.png';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -88,26 +89,59 @@ function CreateVoucher() {
             <div className='col-md-6'>
                 <WelcomePartyInfo />
             </div>
-            <div className='col-md-6'></div>
-            {/* <div className='col-md-6 input-area'>
-                <div className='sender-wallet-connect-button'><WalletMultiButton /></div>
-                {
-                    voucher && <div>
-                        <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
-                        <div className='success-message large-text'>Success! Here’s your unique share link:</div>
-                        <div className='share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
-                        <div className='friend-installs-message medium-text'>Once your friend installs Phantom...</div>
+            <div className='col-md-6'>
+                <div className='input-area'>
+                    <div className='row'>
+                        <div className='col sender-wallet-connect-button'>
+                            <WalletMultiButton />
+                        </div>
                     </div>
-                }
-                {
-                    !voucher && <form onSubmit={createVoucher}>
-                        <div className='large-text samo-to-send-text'> $SAMO to send</div>
-                        <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field samo-to-send-input large-text' /></label>
-
-                        <input type="submit" disabled={!wallet.connected} className='send-samo-button large-text' value='Send SAMO!' />
-                    </form>
-                }
-            </div> */}
+                    <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+                    {
+                        voucher &&
+                        <div className='row'>
+                            <div className='col'>
+                                <div className='row'>
+                                    <div className='col'><img src={successLogo} alt='Success'></img></div>
+                                </div>
+                                <div className='row'>
+                                    <div className='large-text'>Success! Here’s your unique share link:</div>
+                                </div>
+                                <div className='row'>
+                                    <div className='share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
+                                </div>
+                                <div className='row'>
+                                    <div className='medium-text'>Once your friend installs Phantom...</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    {
+                        !voucher &&
+                        <div className='row'>
+                            <div className='col'>
+                                <form onSubmit={createVoucher}>
+                                    <div className='row'>
+                                        <div className='col-md-5'>
+                                            <div className='large-text'> $SAMO to send</div>
+                                        </div>
+                                        <div className='col-md-7'>
+                                            <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field large-text' /></label>
+                                        </div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+                                    <div className='row'>
+                                        <div className='col'>
+                                            <input type="submit" disabled={!wallet.connected} className='button large-text' value='Send SAMO!' />
+                                        </div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     );
 }
