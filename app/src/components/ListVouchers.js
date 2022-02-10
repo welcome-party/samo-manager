@@ -85,7 +85,7 @@ function ListVouchers() {
 
 
     return (
-        <div className='content'>
+        <div className='row align-items-center'>
             <div><WalletMultiButton /></div>
             <div className='list-area'>
                 {vouchers.map((voucher, key) => <div key={key} className='list-item medium-text'>

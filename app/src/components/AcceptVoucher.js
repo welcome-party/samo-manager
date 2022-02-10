@@ -129,7 +129,7 @@ function AcceptVoucher() {
     }, []);
 
     return (
-        <div className='content'>
+        <div className='row align-items-center'>
             <WelcomePartyInfo />
             {
                 !voucher && <div className='input-area large-text'><div className='invalid-message'>Invalid Voucher</div></div>
