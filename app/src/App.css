@@ -1,5 +1,8 @@
-.header {
+.header, .footer {
+  height: 75px;
   background: #1D233E;
+  align-content: center;
+  text-align: center;
 }
 
 .small-text {

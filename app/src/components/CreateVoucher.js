@@ -84,7 +84,7 @@ function CreateVoucher() {
     }
 
     return (
-        <div className='row align-items-center'>
+        <div className='row'>
             <WelcomePartyInfo />
             <div className='input-area'>
                 <div className='sender-wallet-connect-button'><WalletMultiButton /></div>
