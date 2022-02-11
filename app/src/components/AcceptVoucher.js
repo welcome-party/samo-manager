@@ -17,6 +17,7 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 import './WalletAdaptor.css';
 import WelcomePartyInfo from './WelcomePartyInfo.js';
 import successLogo from '../assets/success_logo.png';
+import { truncateBase58 } from '../Helpers.js';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -146,7 +147,7 @@ function AcceptVoucher() {
                                 <div className='row'>&nbsp;</div>
                                 <div className='row'>
                                     <div className='col'>
-                                        {voucher.senderKey.toString()} has invited you to join them and get free $SAMO
+                                        {truncateBase58(voucher.senderKey.toBase58())} has invited you to join them and get free $SAMO
                                     </div>
                                     <div className='row'>&nbsp;</div>
                                     <div className='row'>&nbsp;</div>

@@ -17,6 +17,8 @@ import './CreateVoucher.css';
 import './WalletAdaptor.css';
 import WelcomePartyInfo from './WelcomePartyInfo.js';
 import successLogo from '../assets/success_logo.png';
+import { truncateBase58, copyToClipBoard } from '../Helpers.js';
+import copyLogo from '../assets/copy.png';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -109,7 +111,8 @@ function CreateVoucher() {
                                 </div>
                                 <div className='row'>&nbsp;</div>
                                 <div className='row'>
-                                    <div className='col share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
+                                    <div className='col-md-9 share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={truncateBase58(voucherKey)}</div>
+                                    <div className='col-md-2 d-flex'><button className="btn btn-link" onClick={() => copyToClipBoard(window.location.origin + '/accept-voucher?voucherKey=' + voucherKey)}><img src={copyLogo} className='img-fluid' alt='Copy'></img></button></div>
                                 </div>
                                 <div className='row'>&nbsp;</div>
                                 <div className='row'>

@@ -14,6 +14,8 @@ import idl from '../idl/samo_manager.json';
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { truncateBase58, copyToClipBoard } from '../Helpers.js';
+import copyLogo from '../assets/copy.png';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -97,7 +99,7 @@ function ListVouchers() {
             <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
             <div className='row'>
                 <div className='col'>
-                    <table class="table medium-text align-middle">
+                    <table className="table medium-text align-middle">
                         <thead>
                             <tr>
                                 <th scope="col">Voucher Key</th>
@@ -107,8 +109,11 @@ function ListVouchers() {
                         </thead>
                         <tbody>
                             {vouchers.map((voucher, key) =>
-                                <tr>
-                                    <td>{voucher.publicKey.toString()}</td>
+                                <tr key={key}>
+                                    <td>
+                                        {truncateBase58(voucher.publicKey.toBase58())}&nbsp;&nbsp;
+                                        <button className="btn btn-link" onClick={() => copyToClipBoard(voucher.publicKey.toString())}><img src={copyLogo} className='img-fluid' alt='Copy'></img></button>
+                                    </td>
                                     <td>{voucher.account.tokenCount.toString()}</td>
                                     <td>
                                         {
