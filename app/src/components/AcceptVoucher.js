@@ -14,9 +14,9 @@ import idl from '../idl/samo_manager.json';
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import './AcceptVoucher.css';
 import './WalletAdaptor.css';
-import WelcomePartyInfo from './subcomponents/WelcomePartyInfo.js';
+import WelcomePartyInfo from './WelcomePartyInfo.js';
+import successLogo from '../assets/success_logo.png';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -90,11 +90,11 @@ function AcceptVoucher() {
                 transaction.feePayer = provider.wallet.publicKey;
                 transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
                 await provider.wallet.signTransaction(transaction);
-    
+
                 const transactionSignature = await connection.sendRawTransaction(transaction.serialize(),
                     { skipPreflight: true }
                 );
-                await connection.confirmTransaction(transactionSignature);    
+                await connection.confirmTransaction(transactionSignature);
             }
 
 
@@ -129,28 +129,58 @@ function AcceptVoucher() {
     }, []);
 
     return (
-        <div className='content'>
-            <WelcomePartyInfo />
-            {
-                !voucher && <div className='input-area large-text'><div className='invalid-message'>Invalid Voucher</div></div>
-            }
-            {
-                voucher && <div className='input-area large-text'>
-                    <div className='invite-message'>{voucher.senderKey.toString()} has invited you to join them and get free {voucher.tokenCount.toString()} $SAMO</div>
-                    <div className='step1-message-left'>STEP 1</div>
-                    <div className='step1-message-right'>Install the Phantom Wallet on your Browser</div>
-                    <div className='step2-message-left'>STEP 2</div>
-                    <div className='step2-message-right'>
+        <div className='content row'>
+            <div className='col-md-6'>
+                <WelcomePartyInfo />
+            </div>
+            <div className='col-md-6'>
+                <div className='input-area'>
+                    <div className='row medium-text'>
                         {
-                            <div className='receiver-wallet-connect-button'><WalletMultiButton /></div>
+                            !voucher &&
+                            <div className='col'>Invalid Voucher, Try again!</div>
+                        }
+                        {
+                            voucher &&
+                            <div className='col'>
+                                <div className='row'>&nbsp;</div>
+                                <div className='row'>
+                                    <div className='col'>
+                                        {voucher.senderKey.toString()} has invited you to join them and get free $SAMO
+                                    </div>
+                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>
+                                        <div className='col-md-3'>STEP 1</div>
+                                        <div className='col-md-9 d-flex'>Install the Phantom Wallet on your Browser</div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>
+                                        <div className='col-md-3'>STEP 2</div>
+                                        <div className='col-md-9  d-flex'><WalletMultiButton /></div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>
+                                        <div className='col-md-3'>STEP 3</div>
+                                        <div className='col-md-9 d-flex'>
+                                            <img src={successLogo} className='img-fluid w-25' alt='Success'></img> &nbsp; &nbsp; &nbsp; Get $SAMO {voucher.tokenCount.toString()}
+                                        </div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>
+                                        <div className='col'>
+                                            <input type="button" disabled={!wallet.connected} className='button w-50 p-3 large-text' value='Accept SAMO!' onClick={acceptVoucher} />
+                                        </div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div>
+                                </div>
+                            </div>
                         }
                     </div>
-                    <div className='step3-message-left'>STEP 3</div>
-                    <div className='step3-message-right'><img src={require('../assets/success_logo.png')} className='step3-success-logo' alt='Success'></img></div>
-                    <input type="button" disabled={!wallet.connected} className='accept-samo-button large-text' value='Accept SAMO!' onClick={acceptVoucher} />
                 </div>
-            }
-
+            </div>
         </div>
     );
 }

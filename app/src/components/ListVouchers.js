@@ -14,7 +14,6 @@ import idl from '../idl/samo_manager.json';
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import './ListVouchers.css';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -32,7 +31,7 @@ function ListVouchers() {
             const connection = new Connection(clusterUrl, opts.preflightCommitment);
             const provider = new Provider(connection, wallet, opts.preflightCommitment);
             const program = new Program(idl, programID, provider);
-    
+
             setVouchers(await program.account.voucherAccount.all());
         } catch (err) {
             console.log("Transaction Error: ", err);
@@ -47,16 +46,16 @@ function ListVouchers() {
             const connection = new Connection(clusterUrl, opts.preflightCommitment);
             const provider = new Provider(connection, wallet, opts.preflightCommitment);
             const program = new Program(idl, programID, provider);
-    
+
             const voucherAccount = await program.account.voucherAccount.fetch(voucherKey);
             const mintToken = new Token(connection, mintPublicKey, TOKEN_PROGRAM_ID);
             const vaultAccountSeed = new Uint8Array(voucherAccount.vaultAccountSeed);
             const vaultAuthoritySeed = anchor.utils.bytes.utf8.encode("voucher");
-    
+
             const senderTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
             const [vaultAccountPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAccountSeed)], program.programId);
-            const [vaultAuthorityPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAuthoritySeed)],program.programId);
-          
+            const [vaultAuthorityPda] = await PublicKey.findProgramAddress([Buffer.from(vaultAuthoritySeed)], program.programId);
+
             await program.rpc.cancelVoucher(
                 {
                     accounts: {
@@ -86,16 +85,42 @@ function ListVouchers() {
 
     return (
         <div className='content'>
-            <div><WalletMultiButton /></div>
-            <div className='list-area'>
-                {vouchers.map((voucher, key) => <div key={key} className='list-item medium-text'>
-                    Voucher: {voucher.publicKey.toString()} &nbsp;
-                    $SAMO: {voucher.account.tokenCount.toString()} &nbsp;
-                    {
-                        wallet.connected && (wallet.publicKey.toString() === voucher.account.senderKey.toString()) &&
-                        <input type="button" disabled={!wallet.connected} className='cancel-voucher-button medium-text' value='Cancel' onClick={() => cancelVoucher(voucher.publicKey.toString())} />
-                    }
-                </div>)}
+            <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+            <div className='row'>
+                <div className='col-md-6 large-text'>
+                    Connect to your wallet to Cancel any vouchers:
+                </div>
+                <div className='col-md-6 d-flex'>
+                    <WalletMultiButton />
+                </div>
+            </div>
+            <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+            <div className='row'>
+                <div className='col'>
+                    <table class="table medium-text align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Voucher Key</th>
+                                <th scope="col">$SAMO</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {vouchers.map((voucher, key) =>
+                                <tr>
+                                    <td>{voucher.publicKey.toString()}</td>
+                                    <td>{voucher.account.tokenCount.toString()}</td>
+                                    <td>
+                                        {
+                                            wallet.connected && (wallet.publicKey.toString() === voucher.account.senderKey.toString()) &&
+                                            <input type="button" disabled={!wallet.connected} className='button p-2 medium-text' value='Cancel' onClick={() => cancelVoucher(voucher.publicKey.toString())} />
+                                        }
+                                    </td>
+                                </tr>)}
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
         </div>
     );

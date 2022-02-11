@@ -1,13 +1,25 @@
 import React from 'react';
 
-import './Footer.css';
-
 const Footer = () => {
   return (
-    <div className='footer'>
-      <a target="_blank" href="www.google.com" className='social-link link-text'>SOCIAL</a>
-      <a target="_blank" href="www.google.com" className='company-link link-text'>COMPANY</a>
-      <a target="_blank" href="www.google.com" className='support-link link-text'>SUPPORT</a>
+    <div className='row footer mt-auto'>
+      <div className='col-md-2'>
+        <a href="https://google.com/" target="_blank" rel="noreferrer noopener" className='link-text'>
+          SOCIAL
+        </a>
+      </div>
+      <div className='col-md-6'>
+      </div>
+      <div className='col-md-2'>
+        <a href="https://google.com/" target="_blank" rel="noreferrer noopener" className='link-text'>
+          COMPANY
+        </a>
+      </div>
+      <div className='col-md-2'>
+        <a href="https://google.com/" target="_blank" rel="noreferrer noopener" className='link-text'>
+          SUPPORT
+        </a>
+      </div>
     </div>
   );
 };

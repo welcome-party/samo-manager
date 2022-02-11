@@ -15,7 +15,8 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 
 import './CreateVoucher.css';
 import './WalletAdaptor.css';
-import WelcomePartyInfo from './subcomponents/WelcomePartyInfo.js';
+import WelcomePartyInfo from './WelcomePartyInfo.js';
+import successLogo from '../assets/success_logo.png';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
 const mintPublicKey = process.env.REACT_APP_SAMO_MINT ? new PublicKey(process.env.REACT_APP_SAMO_MINT) : new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU");
@@ -33,17 +34,17 @@ function CreateVoucher() {
 
     async function createVoucher(event) {
         event.preventDefault();
-        
+
         try {
             const voucherAccount = Keypair.generate();
             const vaultAccountSeed = anchor.utils.bytes.utf8.encode(Date.now() + '');
-    
+
             const connection = new Connection(clusterUrl, opts.preflightCommitment);
             const provider = new Provider(connection, wallet, opts.preflightCommitment);
             const program = new Program(idl, programID, provider);
-    
+
             const mintToken = new Token(connection, mintPublicKey, TOKEN_PROGRAM_ID);
-    
+
             const senderTokenAccount = await mintToken.getOrCreateAssociatedAccountInfo(provider.wallet.publicKey);
             const [vaultAccountPda, vaultAccountBump] = await PublicKey.findProgramAddress([Buffer.from(vaultAccountSeed)], program.programId);
 
@@ -84,26 +85,65 @@ function CreateVoucher() {
     }
 
     return (
-        <div className='content'>
-            <WelcomePartyInfo />
-            <div className='input-area'>
-                <div className='sender-wallet-connect-button'><WalletMultiButton /></div>
-                {
-                    voucher && <div>
-                        <img src={require('../assets/success_logo.png')} className='success-logo' alt='Success'></img>
-                        <div className='success-message large-text'>Success! Here’s your unique share link:</div>
-                        <div className='share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
-                        <div className='friend-installs-message medium-text'>Once your friend installs Phantom...</div>
+        <div className='content row'>
+            <div className='col-md-6'>
+                <WelcomePartyInfo />
+            </div>
+            <div className='col-md-6'>
+                <div className='input-area'>
+                    <div className='row'>
+                        <div className='col sender-wallet-connect-button'>
+                            <WalletMultiButton />
+                        </div>
                     </div>
-                }
-                {
-                    !voucher && <form onSubmit={createVoucher}>
-                        <div className='large-text samo-to-send-text'> $SAMO to send</div>
-                        <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field samo-to-send-input large-text' /></label>
-
-                        <input type="submit" disabled={!wallet.connected} className='send-samo-button large-text' value='Send SAMO!' />
-                    </form>
-                }
+                    <div className='row'>&nbsp;</div>
+                    {
+                        voucher &&
+                        <div className='row'>
+                            <div className='col'>
+                                <div className='row'>
+                                    <div className='col'><img src={successLogo} className="img-fluid" alt='Success'></img></div>
+                                </div>
+                                <div className='row'>
+                                    <div className='col large-text'>Success! Here's your unique share link:</div>
+                                </div>
+                                <div className='row'>&nbsp;</div>
+                                <div className='row'>
+                                    <div className='col share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
+                                </div>
+                                <div className='row'>&nbsp;</div>
+                                <div className='row'>
+                                    <div className='col medium-text'>Once your friend installs Phantom...</div>
+                                </div>
+                                <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+                            </div>
+                        </div>
+                    }
+                    {
+                        !voucher &&
+                        <div className='row'>
+                            <div className='col'>
+                                <form onSubmit={createVoucher}>
+                                    <div className='row'>
+                                        <div className='col-md-5'>
+                                            <div className='large-text'> $SAMO to send</div>
+                                        </div>
+                                        <div className='col-md-7'>
+                                            <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field large-text' /></label>
+                                        </div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+                                    <div className='row'>
+                                        <div className='col'>
+                                            <input type="submit" disabled={!wallet.connected} className='button w-50 p-3 large-text' value='Send SAMO!' />
+                                        </div>
+                                    </div>
+                                    <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     );
