@@ -14,7 +14,6 @@ import idl from '../idl/samo_manager.json';
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import './AcceptVoucher.css';
 import './WalletAdaptor.css';
 import WelcomePartyInfo from './WelcomePartyInfo.js';
 import successLogo from '../assets/success_logo.png';
