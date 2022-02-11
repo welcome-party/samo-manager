@@ -4,7 +4,7 @@ import samoLogo from '../assets/samo_logo.png';
 
 function WelcomePartyInfo() {
     return (
-        <div className=''>
+        <div>
             <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
             <div className='row'>
                 <div className='col'>
