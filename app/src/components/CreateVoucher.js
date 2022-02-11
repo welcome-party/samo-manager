@@ -135,7 +135,7 @@ function CreateVoucher() {
                                     <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
                                     <div className='row'>
                                         <div className='col'>
-                                            <input type="submit" disabled={!wallet.connected} className='button large-text' value='Send SAMO!' />
+                                            <input type="submit" disabled={!wallet.connected} className='button w-50 p-3 large-text' value='Send SAMO!' />
                                         </div>
                                     </div>
                                     <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>

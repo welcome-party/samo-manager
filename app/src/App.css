@@ -11,10 +11,7 @@
 }
 
 .footer {
-  position: fixed;
-  bottom: 0;
   height: 75px;
-  width: 100%;
   background: #1D233E;
   align-content: center;
   text-align: center;

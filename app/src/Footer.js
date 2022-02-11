@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <div className='row footer'>
+    <div className='row footer mt-auto'>
       <div className='col-md-2'>
         <a href="https://google.com/" target="_blank" rel="noreferrer noopener" className='link-text'>
           SOCIAL
