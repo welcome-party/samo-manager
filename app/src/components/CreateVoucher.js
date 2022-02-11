@@ -96,23 +96,26 @@ function CreateVoucher() {
                             <WalletMultiButton />
                         </div>
                     </div>
-                    <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
+                    <div className='row'>&nbsp;</div>
                     {
                         voucher &&
                         <div className='row'>
                             <div className='col'>
                                 <div className='row'>
-                                    <div className='col'><img src={successLogo} alt='Success'></img></div>
+                                    <div className='col'><img src={successLogo} className="img-fluid" alt='Success'></img></div>
                                 </div>
                                 <div className='row'>
-                                    <div className='large-text'>Success! Here’s your unique share link:</div>
+                                    <div className='col large-text'>Success! Here's your unique share link:</div>
                                 </div>
+                                <div className='row'>&nbsp;</div>
                                 <div className='row'>
-                                    <div className='share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
+                                    <div className='col share-link-field share-link-text'>{window.location.origin}/accept-voucher?voucherKey={voucherKey}</div>
                                 </div>
+                                <div className='row'>&nbsp;</div>
                                 <div className='row'>
-                                    <div className='medium-text'>Once your friend installs Phantom...</div>
+                                    <div className='col medium-text'>Once your friend installs Phantom...</div>
                                 </div>
+                                <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
                             </div>
                         </div>
                     }

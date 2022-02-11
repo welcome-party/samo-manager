@@ -8,11 +8,13 @@
   background: rgba(0, 0, 0, 0.26);
   border: 1px solid #FF60FD;
   box-sizing: border-box;
-  border-radius: 14px;  
+  border-radius: 14px;
+  max-width: 90%;
+  margin-left: 30px;
 }
 
 .share-link-text {
-  padding: 10px;
+  padding: 5px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
