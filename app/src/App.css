@@ -72,6 +72,7 @@
   box-sizing: border-box;
   border-radius: 12px;
   padding: 10px; 
+  width: 80%;
 }
 
 .button:enabled {
