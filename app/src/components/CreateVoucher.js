@@ -93,10 +93,13 @@ function CreateVoucher() {
             </div>
             <div className='col-md-6'>
                 <div className='input-area'>
+                    <div className='row'>&nbsp;</div>
                     <div className='row'>
-                        <div className='col sender-wallet-connect-button'>
+                        <div className='col-md-4'>&nbsp;</div>
+                        <div className='col-md-4'>
                             <WalletMultiButton />
                         </div>
+                        <div className='col-md-4'>&nbsp;</div>
                     </div>
                     <div className='row'>&nbsp;</div>
                     {
@@ -128,10 +131,10 @@ function CreateVoucher() {
                             <div className='col'>
                                 <form onSubmit={createVoucher}>
                                     <div className='row'>
-                                        <div className='col-md-5'>
+                                        <div className='col-md-6'>
                                             <div className='large-text'> $SAMO to send</div>
                                         </div>
-                                        <div className='col-md-7'>
+                                        <div className='col-md-6'>
                                             <label><input type="number" value={tokenCount} onChange={(e) => setTokenCount(e.target.value)} required className='input-field large-text' /></label>
                                         </div>
                                     </div>
