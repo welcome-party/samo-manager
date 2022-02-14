@@ -90,3 +90,35 @@
 
   color: rgba(255, 255, 255, 0.3);
 }
+
+.share-link-field {
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid #FF60FD;
+  box-sizing: border-box;
+  border-radius: 14px;
+  max-width: 90%;
+  margin-left: 30px;
+}
+
+.share-link-text {
+  padding: 5px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  
+  color: #00BEE8;
+}
+
+.ellipse-footer {
+  width: 100%;
+  float: right;
+  margin-right: -55%;
+}
+
+.samoyed-dog-footer {
+  width: 25%;
+  float: right;
+  margin-right: -3%;
+}
