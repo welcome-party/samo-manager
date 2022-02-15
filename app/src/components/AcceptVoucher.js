@@ -162,28 +162,28 @@ function AcceptVoucher() {
                                     <div className='row'>
                                         <div className='col-md-2'>&nbsp;</div>
                                         <div className='col-md-2 rectangle m-2 p-2'>
-                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank">
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" rel="noopener noreferrer">
                                                 <ChromeLogo />
                                             </a><br />
-                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" className=' link-text medium-text'>Chrome</a>
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" rel="noopener noreferrer" className=' link-text medium-text'>Chrome</a>
                                         </div>
                                         <div className='col-md-2 rectangle m-2 p-2'>
-                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank">
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" rel="noopener noreferrer">
                                                 <BraveLogo />
                                             </a><br />
-                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" className=' link-text medium-text'>Brave</a>
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" rel="noopener noreferrer" className=' link-text medium-text'>Brave</a>
                                         </div>
                                         <div className='col-md-2 rectangle m-2 p-2'>
-                                            <a href="https://addons.mozilla.org/en-US/firefox/addon/phantom-app/" target="_blank">
+                                            <a href="https://addons.mozilla.org/en-US/firefox/addon/phantom-app/" target="_blank" rel="noopener noreferrer">
                                                 <FirefoxLogo />
                                             </a><br />
-                                            <a href="https://addons.mozilla.org/en-US/firefox/addon/phantom-app/" target="_blank" className=' link-text medium-text'>Firefox</a>
+                                            <a href="https://addons.mozilla.org/en-US/firefox/addon/phantom-app/" target="_blank" rel="noopener noreferrer" className=' link-text medium-text'>Firefox</a>
                                         </div>
                                         <div className='col-md-2 rectangle m-2 p-2'>
-                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank">
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" rel="noopener noreferrer">
                                                 <EdgeLogo />
                                             </a><br />
-                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" className=' link-text medium-text'>Edge</a>
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" rel="noopener noreferrer" className=' link-text medium-text'>Edge</a>
                                         </div>
                                     </div>
                                     <div className='row'>&nbsp;</div>
