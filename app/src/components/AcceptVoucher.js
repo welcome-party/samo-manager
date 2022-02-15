@@ -120,6 +120,7 @@ function AcceptVoucher() {
                     }
                 }
             );
+            alert('Successfully receved $SAMO: ' + voucherAccount.tokenCount);
             history.push('/');
         } catch (err) {
             console.log("Transaction Error: ", err);
