@@ -34,11 +34,20 @@ function ListVouchers() {
             const provider = new Provider(connection, wallet, opts.preflightCommitment);
             const program = new Program(idl, programID, provider);
 
-            setVouchers(await program.account.voucherAccount.all());
+            if (wallet.connected) {
+                setVouchers(await program.account.voucherAccount.all([{
+                    memcmp: {
+                        offset: 8,
+                        bytes: provider.wallet.publicKey.toBase58(),
+                    }
+                }]));
+            } else {
+                setVouchers([]);    
+            }
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
-            setVouchers(null);
+            setVouchers([]);
             history.push('/');
         }
     }
@@ -75,14 +84,14 @@ function ListVouchers() {
         } catch (err) {
             console.log("Transaction Error: ", err);
             alert('Tranaction Error:' + err);
-            setVouchers(null);
+            setVouchers([]);
             history.push('/');
         }
     }
 
     useEffect(() => {
         listVouchers();
-    }, []);
+    }, [wallet.connected]);
 
 
     return (
@@ -90,10 +99,10 @@ function ListVouchers() {
             <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
             <div className='row'>
                 <div className='col-md-6 large-text'>
-                    Connect to your wallet to Cancel any vouchers:
+                    Connect to your wallet Fetch/Cancel your vouchers:
                 </div>
                 <div className='col-md-6 d-flex'>
-                    <WalletMultiButton />
+                    <WalletMultiButton/>
                 </div>
             </div>
             <div className='row'>&nbsp;</div><div className='row'>&nbsp;</div>
