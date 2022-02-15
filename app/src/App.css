@@ -122,3 +122,10 @@
   float: right;
   margin-right: -3%;
 }
+
+.rectangle {
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid #FF60FD;
+  box-sizing: border-box;
+  border-radius: 14px;
+}

@@ -17,6 +17,10 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 import './WalletAdaptor.css';
 import WelcomePartyInfo from './WelcomePartyInfo.js';
 import successLogo from '../assets/success_logo.png';
+import { ReactComponent as ChromeLogo } from '../assets/chrome.svg';
+import { ReactComponent as BraveLogo } from '../assets/brave.svg';
+import { ReactComponent as FirefoxLogo } from '../assets/chrome.svg';
+import { ReactComponent as EdgeLogo } from '../assets/edge.svg';
 import { truncateBase58 } from '../Helpers.js';
 
 const clusterUrl = process.env.REACT_APP_CLUSTER_URL;
@@ -155,7 +159,33 @@ function AcceptVoucher() {
                                         <div className='col-md-3'>STEP 1</div>
                                         <div className='col-md-9 d-flex'>Install the Phantom Wallet on your Browser</div>
                                     </div>
-                                    <div className='row'>&nbsp;</div>
+                                    <div className='row'>
+                                        <div className='col-md-2'>&nbsp;</div>
+                                        <div className='col-md-2 rectangle m-2 p-2'>
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank">
+                                                <ChromeLogo />
+                                            </a><br />
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" className=' link-text medium-text'>Chrome</a>
+                                        </div>
+                                        <div className='col-md-2 rectangle m-2 p-2'>
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank">
+                                                <BraveLogo />
+                                            </a><br />
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" className=' link-text medium-text'>Brave</a>
+                                        </div>
+                                        <div className='col-md-2 rectangle m-2 p-2'>
+                                            <a href="https://addons.mozilla.org/en-US/firefox/addon/phantom-app/" target="_blank">
+                                                <FirefoxLogo />
+                                            </a><br />
+                                            <a href="https://addons.mozilla.org/en-US/firefox/addon/phantom-app/" target="_blank" className=' link-text medium-text'>Firefox</a>
+                                        </div>
+                                        <div className='col-md-2 rectangle m-2 p-2'>
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank">
+                                                <EdgeLogo />
+                                            </a><br />
+                                            <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" className=' link-text medium-text'>Edge</a>
+                                        </div>
+                                    </div>
                                     <div className='row'>&nbsp;</div>
                                     <div className='row'>
                                         <div className='col-md-3'>STEP 2</div>
