@@ -44,7 +44,7 @@ npm run start
 ```
 solana config set --url devnet
 ```
-- And update your Anchor.toml file.
+- And update your Anchor.toml file
 - Airdrop yourself some money if necessary: `solana airdrop 5`
 
 # Build and deploy
@@ -57,3 +57,4 @@ anchor deploy
 For installation and example instructions:
 * https://lorisleiva.com/create-a-solana-dapp-from-scratch/getting-started-with-solana-and-anchor
 * https://dev.to/dabit3/the-complete-guide-to-full-stack-solana-development-with-react-anchor-rust-and-phantom-3291
+
